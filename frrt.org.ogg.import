@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/frrt.org.ogg-b7cdb66f094f2005c175936e2a1d57da.oggstr"
+
+[deps]
+
+source_file="res://frrt.org.ogg"
+dest_files=[ "res://.import/frrt.org.ogg-b7cdb66f094f2005c175936e2a1d57da.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

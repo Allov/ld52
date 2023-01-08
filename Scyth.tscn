@@ -1,0 +1,78 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Scyth.cs" type="Script" id=1]
+[ext_resource path="res://shuriken.png" type="Texture" id=2]
+[ext_resource path="res://shadow.png" type="Texture" id=3]
+[ext_resource path="res://frrt.org.ogg" type="AudioStream" id=4]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.0
+rough = true
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 4.0
+
+[sub_resource type="Gradient" id=4]
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=5]
+gradient = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 3.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color_ramp = SubResource( 5 )
+hue_variation = -0.24
+hue_variation_random = 0.99
+
+[node name="Scyth" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 2
+mass = 0.01
+physics_material_override = SubResource( 1 )
+continuous_cd = 2
+contacts_reported = 1
+contact_monitor = true
+angular_velocity = 300.0
+script = ExtResource( 1 )
+
+[node name="Sprite2" type="Sprite" parent="."]
+position = Vector2( 0, 1 )
+texture = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="Area2D" type="Area2D" parent="." groups=["AngryPlants"]]
+collision_layer = 4
+collision_mask = 8
+priority = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 3 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+show_behind_parent = true
+amount = 32
+lifetime = 0.3
+local_coords = false
+process_material = SubResource( 6 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+autoplay = true
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

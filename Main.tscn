@@ -1,0 +1,559 @@
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Scyth.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Player.cs" type="Script" id=2]
+[ext_resource path="res://PlayArea.cs" type="Script" id=3]
+[ext_resource path="res://Tile.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ninja.png" type="Texture" id=5]
+[ext_resource path="res://footprint.png" type="Texture" id=6]
+[ext_resource path="res://shuriken.png" type="Texture" id=7]
+[ext_resource path="res://Shop.cs" type="Script" id=8]
+[ext_resource path="res://shadow.png" type="Texture" id=9]
+[ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=10]
+[ext_resource path="res://AngryCorn.tscn" type="PackedScene" id=11]
+[ext_resource path="res://AngryTomato.tscn" type="PackedScene" id=12]
+[ext_resource path="res://AngryEggplant.tscn" type="PackedScene" id=13]
+[ext_resource path="res://UI.cs" type="Script" id=14]
+[ext_resource path="res://splash.png" type="Texture" id=15]
+[ext_resource path="res://Vignette.gdshader" type="Shader" id=16]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 4.0
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 0 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=4]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 1.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color_ramp = SubResource( 3 )
+
+[sub_resource type="Gradient" id=5]
+colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+emission_shape = 1
+emission_sphere_radius = 3.06
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+angular_velocity = 183.53
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color_ramp = SubResource( 6 )
+hue_variation = -0.14
+hue_variation_random = 0.67
+
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "run"
+length = 0.4
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.25, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -1 ), Vector2( 0, 1 ), Vector2( 0, -1 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.25, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 15.0, 0.0, -15.0, 0.0 ]
+}
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 4.0
+
+[sub_resource type="Animation" id=11]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("VBoxContainer/Label:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="Animation" id=12]
+resource_name = "paused"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("VBoxContainer/Label:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 16 )
+shader_param/player_position = Vector2( 0.5, 0.5 )
+shader_param/color = Color( 0.0901961, 0.0901961, 0.0980392, 1 )
+shader_param/MULTIPLIER = 0.56
+shader_param/SCALE = 1.5
+shader_param/SOFTNESS = 0.65
+
+[sub_resource type="Environment" id=13]
+background_mode = 4
+glow_enabled = true
+glow_bloom = 0.05
+glow_blend_mode = 1
+adjustment_enabled = true
+
+[node name="Main" type="Node2D"]
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="PlayArea" type="Node2D" parent="World"]
+script = ExtResource( 3 )
+Width = 24
+Height = 12
+TileSize = 16
+TileScene = ExtResource( 4 )
+GrowTime = 8.0
+DaysLabelNodePath = NodePath("../../UI/Label")
+PlayerNodePath = NodePath("../Player")
+ShopNodePath = NodePath("../../UI/Shop")
+AngryPlantScene = ExtResource( 10 )
+AngryCornScene = ExtResource( 11 )
+AngryTomatoScene = ExtResource( 12 )
+AngryEggplantScene = ExtResource( 13 )
+GameOverNodePath = NodePath("../../UI/GameOver")
+
+[node name="Walls" type="StaticBody2D" parent="World/PlayArea"]
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/PlayArea/Walls"]
+polygon = PoolVector2Array( 0, 216, 384, 216, 384, 0, 0, 0, 0, -8, 392, -8, 392, 224, -8, 224, -8, -8, 0, -8 )
+
+[node name="Player" type="KinematicBody2D" parent="World"]
+position = Vector2( 192, 104 )
+script = ExtResource( 2 )
+ActionForce = Vector2( 160, 160 )
+ScythScene = ExtResource( 1 )
+ScythCount = 1
+
+[node name="Sprite2" type="Sprite" parent="World/Player"]
+texture = ExtResource( 9 )
+
+[node name="Sprite" type="Sprite" parent="World/Player"]
+texture = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Player"]
+shape = SubResource( 1 )
+
+[node name="Footprint" type="Particles2D" parent="World/Player"]
+show_behind_parent = true
+randomness = 1.0
+local_coords = false
+process_material = SubResource( 4 )
+texture = ExtResource( 6 )
+
+[node name="Dash" type="Particles2D" parent="World/Player"]
+emitting = false
+amount = 16
+lifetime = 0.5
+explosiveness = 0.06
+local_coords = false
+process_material = SubResource( 7 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="World/Player"]
+anims/RESET = SubResource( 8 )
+anims/run = SubResource( 9 )
+
+[node name="Area2D" type="Area2D" parent="World/Player"]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Player/Area2D"]
+shape = SubResource( 10 )
+
+[node name="UI" type="CanvasLayer" parent="."]
+pause_mode = 2
+script = ExtResource( 14 )
+
+[node name="Label" type="Label" parent="UI"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -14.0
+margin_right = 40.0
+text = "tewsat"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Shop" type="PanelContainer" parent="UI"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -96.0
+margin_top = -72.0
+margin_right = 96.0
+margin_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+PlayerNodePath = NodePath("../../World/Player")
+PlayAreaNodePath = NodePath("../../World/PlayArea")
+
+[node name="ShopContainer" type="VBoxContainer" parent="UI/Shop"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 185.0
+margin_bottom = 137.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="UI/Shop/ShopContainer"]
+margin_top = 3.0
+margin_right = 178.0
+margin_bottom = 30.0
+custom_colors/font_color = Color( 0.992157, 1, 0, 1 )
+text = "Welcome to the shop!
+What would you like to buy?"
+align = 1
+
+[node name="Items" type="HBoxContainer" parent="UI/Shop/ShopContainer"]
+margin_top = 34.0
+margin_right = 178.0
+margin_bottom = 104.0
+custom_constants/separation = 15
+alignment = 1
+
+[node name="Item0" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items"]
+margin_left = 26.0
+margin_right = 58.0
+margin_bottom = 70.0
+alignment = 1
+
+[node name="Name" type="Label" parent="UI/Shop/ShopContainer/Items/Item0"]
+margin_right = 32.0
+margin_bottom = 12.0
+text = "Item 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Image" type="HBoxContainer" parent="UI/Shop/ShopContainer/Items/Item0"]
+margin_top = 16.0
+margin_right = 32.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items/Item0/Image"]
+margin_left = 12.0
+margin_right = 20.0
+margin_bottom = 32.0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="UI/Shop/ShopContainer/Items/Item0/Image/VBoxContainer"]
+margin_top = 12.0
+margin_right = 8.0
+margin_bottom = 20.0
+texture = ExtResource( 7 )
+
+[node name="Buy" type="Button" parent="UI/Shop/ShopContainer/Items/Item0"]
+margin_top = 52.0
+margin_right = 32.0
+margin_bottom = 70.0
+text = "Buy"
+
+[node name="Item1" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items"]
+margin_left = 73.0
+margin_right = 105.0
+margin_bottom = 70.0
+alignment = 1
+
+[node name="Name" type="Label" parent="UI/Shop/ShopContainer/Items/Item1"]
+margin_right = 32.0
+margin_bottom = 12.0
+text = "Item 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Image" type="HBoxContainer" parent="UI/Shop/ShopContainer/Items/Item1"]
+margin_top = 16.0
+margin_right = 32.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items/Item1/Image"]
+margin_left = 12.0
+margin_right = 20.0
+margin_bottom = 32.0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="UI/Shop/ShopContainer/Items/Item1/Image/VBoxContainer"]
+margin_top = 12.0
+margin_right = 8.0
+margin_bottom = 20.0
+texture = ExtResource( 7 )
+
+[node name="Buy" type="Button" parent="UI/Shop/ShopContainer/Items/Item1"]
+margin_top = 52.0
+margin_right = 32.0
+margin_bottom = 70.0
+text = "Buy"
+
+[node name="Item2" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items"]
+margin_left = 120.0
+margin_right = 152.0
+margin_bottom = 70.0
+alignment = 1
+
+[node name="Name" type="Label" parent="UI/Shop/ShopContainer/Items/Item2"]
+margin_right = 32.0
+margin_bottom = 12.0
+text = "Item 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Image" type="HBoxContainer" parent="UI/Shop/ShopContainer/Items/Item2"]
+margin_top = 16.0
+margin_right = 32.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Shop/ShopContainer/Items/Item2/Image"]
+margin_left = 12.0
+margin_right = 20.0
+margin_bottom = 32.0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="UI/Shop/ShopContainer/Items/Item2/Image/VBoxContainer"]
+margin_top = 12.0
+margin_right = 8.0
+margin_bottom = 20.0
+texture = ExtResource( 7 )
+
+[node name="Buy" type="Button" parent="UI/Shop/ShopContainer/Items/Item2"]
+margin_top = 52.0
+margin_right = 32.0
+margin_bottom = 70.0
+text = "Buy"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Shop/ShopContainer"]
+margin_top = 108.0
+margin_right = 178.0
+margin_bottom = 126.0
+
+[node name="RerollItems" type="Button" parent="UI/Shop/ShopContainer/HBoxContainer"]
+margin_right = 87.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+text = "Reroll (50 $)"
+
+[node name="Continue" type="Button" parent="UI/Shop/ShopContainer/HBoxContainer"]
+margin_left = 91.0
+margin_right = 178.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+text = "Continue"
+
+[node name="GameOver" type="PanelContainer" parent="UI"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -7.0
+margin_top = -7.0
+margin_right = 7.0
+margin_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 200, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOver"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 193.0
+margin_bottom = 41.0
+
+[node name="Label" type="Label" parent="UI/GameOver/VBoxContainer"]
+margin_right = 186.0
+margin_bottom = 12.0
+text = "Game Over!"
+align = 1
+
+[node name="Restart" type="Button" parent="UI/GameOver/VBoxContainer"]
+margin_top = 16.0
+margin_right = 186.0
+margin_bottom = 34.0
+text = "Restart"
+
+[node name="Paused" type="PanelContainer" parent="UI"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -7.0
+margin_top = -7.0
+margin_right = 7.0
+margin_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 200, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Paused"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 193.0
+margin_bottom = 153.0
+
+[node name="Label2" type="Label" parent="UI/Paused/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0.792949 )
+margin_right = 186.0
+margin_bottom = 27.0
+text = "The Gleaning Samurai
+"
+align = 1
+
+[node name="Label" type="Label" parent="UI/Paused/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 31.0
+margin_right = 186.0
+margin_bottom = 58.0
+text = "- Pause -
+"
+align = 1
+
+[node name="HowToPlay" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 62.0
+margin_right = 186.0
+margin_bottom = 80.0
+text = "How to Play"
+
+[node name="Resume" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 84.0
+margin_right = 186.0
+margin_bottom = 102.0
+text = "Resume"
+
+[node name="Restart" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 106.0
+margin_right = 186.0
+margin_bottom = 124.0
+text = "Restart"
+
+[node name="Quit" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 128.0
+margin_right = 186.0
+margin_bottom = 146.0
+text = "Quit"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/Paused"]
+autoplay = "paused"
+anims/RESET = SubResource( 11 )
+anims/paused = SubResource( 12 )
+
+[node name="Tutorial" type="Sprite" parent="UI"]
+visible = false
+texture = ExtResource( 15 )
+centered = false
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+material = SubResource( 14 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 13 )
+
+[connection signal="area_exited" from="World/Player/Area2D" to="World/Player" method="_on_Area2D_area_exited"]
+[connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item0/Buy" to="UI/Shop" method="_on_Buy_Item1_pressed"]
+[connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item1/Buy" to="UI/Shop" method="_on_Buy_Item2_pressed"]
+[connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item2/Buy" to="UI/Shop" method="_on_Buy_Item3_pressed"]
+[connection signal="pressed" from="UI/Shop/ShopContainer/HBoxContainer/RerollItems" to="UI/Shop" method="_on_RerollItems_pressed"]
+[connection signal="pressed" from="UI/Shop/ShopContainer/HBoxContainer/Continue" to="UI/Shop" method="_on_Continue_pressed"]
+[connection signal="pressed" from="UI/GameOver/VBoxContainer/Restart" to="UI" method="_on_Restart_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/HowToPlay" to="UI" method="_on_HowToPlay_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/Resume" to="UI" method="_on_Resume_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/Restart" to="UI" method="_on_Restart_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/Quit" to="UI" method="_on_Quit_pressed"]
