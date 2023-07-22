@@ -12,7 +12,7 @@ public class Player : KinematicBody2D
     public Cooldown ShootCooldown;
 
     [Export]
-    public float speed = 50; // Speed at which the ninja moves
+    public float speed = 200; // Speed at which the ninja moves
 
     [Export]
     public float friction = 6; // Friction applied when the ninja stops moving
@@ -20,7 +20,7 @@ public class Player : KinematicBody2D
     private Vector2 velocity; // Current velocity of the ninja    
 
     [Export]
-    public float dashSpeed = 100; // Speed at which the ninja dashes
+    public float dashSpeed = 400; // Speed at which the ninja dashes
 
     [Export]
     public float dashDuration = 0.3f; // Duration of the dash in seconds
@@ -38,10 +38,12 @@ public class Player : KinematicBody2D
     public int HavestedWeedCount;
     public List<Perk> ActivePerks = new List<Perk>();
     [Export] public int ShurikenSize = 8;
-    private bool CanKillWeed;
     public float ThornTimer;
     private float ThornFactor;
     [Export] public float ThornTime = .5f;
+    internal int BonusCropGold;
+    public bool WeedStomper;
+    public bool WeedKiller;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -63,8 +65,8 @@ public class Player : KinematicBody2D
 
                 var scyth = ScythScene.Instance<Scyth>();
                 scyth.LifeTime = ShurikenLifeTime;
-                scyth.Size = ShurikenSize;
-                scyth.GlobalPosition = GlobalPosition + direction.Rotated(Mathf.Pi / 2f) * (ScythCount - (i + 1)) * ShurikenSize;
+                scyth.Size = ShurikenSize*4;
+                scyth.GlobalPosition = GlobalPosition + direction.Rotated(Mathf.Pi / 2f) * (ScythCount - (i + 1)) * (ShurikenSize*4);
                 GetTree().Root.AddChild(scyth);
 
                 scyth.ApplyCentralImpulse(direction * ActionForce);
@@ -134,29 +136,43 @@ public class Player : KinematicBody2D
     {
         if (sender is Type type)
         {
-            if (type == typeof(AngryEggplant))
-            {
-                GoldCoins += 25;
-            }
-            if (type == typeof(AngryCorn))
-            {
-                GoldCoins += 50;
-            }
-            if (type == typeof(AngryTomato))
-            {
-                GoldCoins += 500;
-            }
-            if (type == typeof(AngryEggplant))
-            {
-                GoldCoins += 1000;
-            }
+            // if (type == typeof(AngryEggplant))
+            // {
+            //     GoldCoins += 25;
+            // }
+            // if (type == typeof(AngryCorn))
+            // {
+            //     GoldCoins += 50;
+            // }
+            // if (type == typeof(AngryTomato))
+            // {
+            //     GoldCoins += 500;
+            // }
+            // if (type == typeof(AngryEggplant))
+            // {
+            //     GoldCoins += 1000;
+            // }
         }
     }
 
     private void OnWeedHarvested(Tile tile)
     {
         HavestedWeedCount++;
-        if (ActivePerks.Any(p => p.Name == "Cut Weed is Fertilized"))
+
+        if (ActivePerks.Any(p => p.Id == "cut-weed-4"))
+        {
+            OnCropHarvested(tile);
+            tile.ChangeGroup("Dirt", true);
+        }
+        else if (ActivePerks.Any(p => p.Id == "cut-weed-3"))
+        {
+            tile.ChangeGroup("Corn", true);
+        }
+        else if (ActivePerks.Any(p => p.Id == "cut-weed-2"))
+        {
+            tile.ChangeGroup("Grass", true);
+        }
+        else if (ActivePerks.Any(p => p.Id == "cut-weed-1"))
         {
             tile.ChangeGroup("Fertilized", true);
         }
@@ -166,13 +182,7 @@ public class Player : KinematicBody2D
     {
         HarvestedCropsCount++;
 
-        var amount = 10;
-
-        if (ActivePerks.Any(p => p.Id == "farmer"))
-        {
-            amount += 5;
-        }
-
+        var amount = 10 + BonusCropGold;
 
         tile.Harvest(amount);
         GoldCoins = GoldCoins + amount;
@@ -189,10 +199,16 @@ public class Player : KinematicBody2D
                 {
                     tile.ChangeGroup("Fertilized", true);
                 }
-                else if (CanKillWeed && area.IsInGroup("Weed"))
+                else if (WeedKiller && area.IsInGroup("Weed"))
                 {
+                    tile.Cut();
                     tile.ChangeGroup("Dirt", true);
                 }
+            }
+            else if (area.IsInGroup("Weed") && WeedStomper)
+            {
+                tile.Cut();
+                tile.ChangeGroup("Dirt", true);
             }
             else if (area.IsInGroup("Weed") && tile.Stage >= 0 && tile.Stage < 2)
             {
@@ -219,11 +235,6 @@ public class Player : KinematicBody2D
 
     internal void GrowSize()
     {
-        ((CircleShape2D)AreaCollisionShape.Shape).Radius += 2f;
-    }
-
-    internal void WeedKiller()
-    {
-        CanKillWeed = true;
+        ((CircleShape2D)AreaCollisionShape.Shape).Radius += (2f);
     }
 }

@@ -37,7 +37,8 @@ public class Tile : Area2D
             FertilizedSprite,
             GrassSprite,
             CornSprite,
-            WeedSprite
+            WeedSprite,
+            WeedSprite2
         });
 
         HideAllSprites();
@@ -118,8 +119,8 @@ public class Tile : Area2D
     private async void DoAnimation()
     {
         var tween = new Tween();
-        tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One, .2f, Tween.TransitionType.Linear, Tween.EaseType.In);
-        tween.InterpolateProperty(CurrentSprite, "modulate:a", .4f, 1f, .2f, Tween.TransitionType.Sine, Tween.EaseType.In);
+        // tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One * 4f, .2f, Tween.TransitionType.Linear, Tween.EaseType.In);
+        tween.InterpolateProperty(CurrentSprite, "modulate:a", 0f, 1f, .2f, Tween.TransitionType.Sine, Tween.EaseType.In);
         AddChild(tween);
         tween.Start();
 
@@ -130,8 +131,9 @@ public class Tile : Area2D
 
     internal void Harvest(int reward)
     {
-        GetNode<Label>("HarvestLabel").Text = $"+{reward}";
-		GetNode<AnimationPlayer>("AnimationPlayer").Play("money");
+        GetNode<CanvasLayer>("CanvasLayer").Offset = GlobalPosition;
+        GetNode<Label>("CanvasLayer/HarvestLabel").Text = $"+{reward}";
+        GetNode<AnimationPlayer>("AnimationPlayer").Play("money");
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

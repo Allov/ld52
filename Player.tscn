@@ -1,0 +1,154 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://shadow.png" type="Texture" id=1]
+[ext_resource path="res://Scyth.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Player.cs" type="Script" id=3]
+[ext_resource path="res://ninja.png" type="Texture" id=4]
+[ext_resource path="res://footprint.png" type="Texture" id=5]
+[ext_resource path="res://white.png" type="Texture" id=6]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 8.0
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 0 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=4]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 4.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 4.0
+color_ramp = SubResource( 3 )
+
+[sub_resource type="Gradient" id=5]
+colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
+
+[sub_resource type="ParticlesMaterial" id=7]
+emission_shape = 1
+emission_sphere_radius = 12.0
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+angular_velocity = 183.53
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 4.0
+color_ramp = SubResource( 6 )
+hue_variation = -0.14
+hue_variation_random = 0.67
+
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "run"
+length = 0.4
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.25, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -1 ), Vector2( 0, 1 ), Vector2( 0, -1 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rotation_degrees")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.25, 0.35 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 15.0, 0.0, -15.0, 0.0 ]
+}
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 12.0
+
+[node name="Player" type="KinematicBody2D"]
+collision_mask = 0
+script = ExtResource( 3 )
+ActionForce = Vector2( 640, 640 )
+ScythScene = ExtResource( 2 )
+ScythCount = 1
+GoldCoins = 50
+
+[node name="Sprite2" type="Sprite" parent="."]
+scale = Vector2( 4, 4 )
+texture = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 4, 4 )
+texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="Footprint" type="Particles2D" parent="."]
+show_behind_parent = true
+randomness = 1.0
+local_coords = false
+process_material = SubResource( 4 )
+texture = ExtResource( 5 )
+
+[node name="Dash" type="Particles2D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.5
+explosiveness = 0.06
+local_coords = false
+process_material = SubResource( 7 )
+texture = ExtResource( 6 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 8 )
+anims/run = SubResource( 9 )
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 10 )
+
+[connection signal="area_exited" from="Area2D" to="." method="_on_Area2D_area_exited"]

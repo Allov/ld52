@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scyth.cs" type="Script" id=1]
 [ext_resource path="res://shuriken.png" type="Texture" id=2]
 [ext_resource path="res://shadow.png" type="Texture" id=3]
 [ext_resource path="res://frrt.org.ogg" type="AudioStream" id=4]
+[ext_resource path="res://white.png" type="Texture" id=5]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -11,10 +12,10 @@ rough = true
 bounce = 1.0
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 4.0
+radius = 12.0
 
 [sub_resource type="CircleShape2D" id=3]
-radius = 4.0
+radius = 12.0
 
 [sub_resource type="Gradient" id=4]
 colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
@@ -25,11 +26,12 @@ gradient = SubResource( 4 )
 [sub_resource type="ParticlesMaterial" id=6]
 lifetime_randomness = 1.0
 emission_shape = 1
-emission_sphere_radius = 3.0
+emission_sphere_radius = 12.0
 flag_disable_z = true
 gravity = Vector3( 0, 0, 0 )
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
+scale = 4.0
 color_ramp = SubResource( 5 )
 hue_variation = -0.24
 hue_variation_random = 0.99
@@ -50,6 +52,7 @@ position = Vector2( 0, 1 )
 texture = ExtResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 4, 4 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -69,6 +72,7 @@ amount = 32
 lifetime = 0.3
 local_coords = false
 process_material = SubResource( 6 )
+texture = ExtResource( 5 )
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )

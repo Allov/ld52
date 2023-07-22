@@ -67,6 +67,7 @@ public class Scyth : RigidBody2D
 
     public void _on_Area2D_body_entered(Node body)
     {
+        GD.Print("?");
         if (body is IHealth healthMob)
         {
             healthMob.Health = healthMob.Health - 1;

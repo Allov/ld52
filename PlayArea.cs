@@ -5,8 +5,8 @@ using System.Linq;
 
 public class PlayArea : Node2D
 {
-    [Export] public int Width = 384 / 2;
-    [Export] public int Height = 216 / 2;
+    [Export] public int Width = (384 * 4) / 2;
+    [Export] public int Height = (216 * 4) / 2;
     [Export] public int TileSize = 2;
     [Export] public PackedScene TileScene;
     private Cooldown GrowCooldown;
@@ -14,14 +14,14 @@ public class PlayArea : Node2D
 
     public Dictionary<int, Tile> Field = new Dictionary<int, Tile>();
     private List<Tile> GrassTiles;
-    private List<Tile> FertilzedTiles;
+    private List<Tile> FertilizedTiles;
     private List<Tile> DirtTiles;
     private List<Tile> CornTiles;
     private List<Tile> WeedTiles;
     private int NumberOfDays;
     [Export] public NodePath DaysLabelNodePath;
     public Label DaysLabel;
-    private Player Player;
+    public Player Player;
     [Export] public float SpawnFactor = 2f / 75f; // about 33% of the field would spawn as weed at day 60
     [Export] public int MaxNumberOfDays = 60;
 
@@ -39,11 +39,21 @@ public class PlayArea : Node2D
     [Export] public NodePath GameOverNodePath;
     public PanelContainer GameOverPanel;
     private bool UserPaused;
+    [Export] public int SpawnFrequency = 4;
+    [Export] public bool LockMouseToWindow = true;
 
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        if (LockMouseToWindow)
+        {
+            Input.SetMouseMode(Input.MouseMode.Confined);
+            // Input.SetMouseMode(Input.MouseMode.Visible);
+        }
+
+		GD.Print("Play!", this);
+
         DaysLabel = GetNode<Label>(DaysLabelNodePath);
         Player = GetNode<Player>(PlayerNodePath);
         Shop = GetNode<Shop>(ShopNodePath);
@@ -56,17 +66,17 @@ public class PlayArea : Node2D
             {
                 // if (RandomHelpers.DrawResult(10)) continue;
                 var tile = TileScene.Instance<Tile>();
-                tile.GlobalPosition = new Vector2(x * TileSize, y * TileSize);
-                tile.Scale = Vector2.Zero;
+                tile.GlobalPosition = new Vector2((float)x * TileSize, (float)y * TileSize);
+                // tile.Scale = Vector2.Zero;
 
-                tween.InterpolateProperty(tile, "scale", Vector2.Zero, Vector2.One, .9f, Tween.TransitionType.Linear, Tween.EaseType.In, (float)(x + y) * .032f);
+                // tween.InterpolateProperty(tile, "scale", Vector2.Zero, Vector2.One * 4f, .9f, Tween.TransitionType.Linear, Tween.EaseType.In, (float)(x + y) * .032f);
                 AddChild(tile);
 
                 // if (RandomHelpers.DrawResult(2))
                 // {
                 // 	tile.ChangeGroup("Fertilized");
                 // }
-                if ((RandomHelpers.DrawResult(100)))
+                if (RandomHelpers.DrawResult(60))
                 {
                     tile.ChangeGroup("Corn");
                 }
@@ -88,6 +98,10 @@ public class PlayArea : Node2D
                 tile.Y = y;
 
                 Field.Add(tile.PositionIndex, tile);
+
+				
+				// GD.Print(tile.X, tile.Y, tile.PositionIndex);
+
             }
         }
 
@@ -102,7 +116,7 @@ public class PlayArea : Node2D
 
     private void UpdateUi()
     {
-        DaysLabel.Text = $"Day: {NumberOfDays} Crops: {Player.HarvestedCropsCount} Weeds: {Player.HavestedWeedCount} $ {Player.GoldCoins} Thorned: {Player.ThornTimer > 0f}";
+        DaysLabel.Text = $"Day: {NumberOfDays} Crops: {Player.HarvestedCropsCount} Weeds (cut): {Player.HavestedWeedCount} Weeds % {(((float)(WeedTiles?.Count).GetValueOrDefault(0) / (float)Field.Count) * 100f).ToString("0.00")} $ {Player.GoldCoins}";
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -114,22 +128,22 @@ public class PlayArea : Node2D
             GameOverPanel.Visible = true;
         }
 
+        UpdateTileGroupCount();
+
+
         if (GrowCooldown.Use())
         {
             NumberOfDays++;
-            GrassTiles = GetTree().GetNodesInGroup("Grass").Cast<Tile>().ToList();
-            FertilzedTiles = GetTree().GetNodesInGroup("Fertilized").Cast<Tile>().ToList();
-            DirtTiles = GetTree().GetNodesInGroup("Dirt").Cast<Tile>().ToList();
-            CornTiles = GetTree().GetNodesInGroup("Corn").Cast<Tile>().ToList();
-            WeedTiles = GetTree().GetNodesInGroup("Weed").Cast<Tile>().ToList();
 
             GrowCrops();
             GrowWeeds();
+
             SpawnWeeds();
+
             SpawnAngries();
 
 
-            if (NumberOfDays > 0 && NumberOfDays % 4 == 0)
+            if (NumberOfDays > 0 && NumberOfDays % SpawnFrequency == 0)
             {
                 Shop.OpenShop();
             }
@@ -139,8 +153,16 @@ public class PlayArea : Node2D
             }
         }
 
-
         UpdateUi();
+    }
+
+    private void UpdateTileGroupCount()
+    {
+        GrassTiles = GetTree().GetNodesInGroup("Grass").Cast<Tile>().ToList();
+        FertilizedTiles = GetTree().GetNodesInGroup("Fertilized").Cast<Tile>().ToList();
+        DirtTiles = GetTree().GetNodesInGroup("Dirt").Cast<Tile>().ToList();
+        CornTiles = GetTree().GetNodesInGroup("Corn").Cast<Tile>().ToList();
+        WeedTiles = GetTree().GetNodesInGroup("Weed").Cast<Tile>().ToList();
     }
 
     private void SpawnAngries()
@@ -195,35 +217,40 @@ public class PlayArea : Node2D
 
     private void SpawnAngryPlant()
     {
-        var angryPlant = AngryPlantScene.Instance<AngryPlant>();
-        angryPlant.GlobalPosition = new Vector2(RandomHelpers.RangeInt(100, 300), RandomHelpers.RangeInt(50, 150));
+        var angryPlant = AngryPlantScene.Instance<BaseAngry>();
+        angryPlant.GlobalPosition = GetRandomPositionOnPlayArea();
         GetTree().Root.AddChild(angryPlant);
+    }
+
+    private static Vector2 GetRandomPositionOnPlayArea()
+    {
+        return new Vector2(RandomHelpers.RangeInt(400, 1200), RandomHelpers.RangeInt(200, 600));
     }
 
     private void SpawnAngryTomato()
     {
-        var angryTomato = AngryTomatoScene.Instance<AngryTomato>();
-        angryTomato.GlobalPosition = new Vector2(RandomHelpers.RangeInt(100, 300), RandomHelpers.RangeInt(50, 150));
+        var angryTomato = AngryTomatoScene.Instance<BaseAngry>();
+        angryTomato.GlobalPosition = GetRandomPositionOnPlayArea();
         GetTree().Root.AddChild(angryTomato);
     }
 
     private void SpawnAngryEggplant()
     {
-        var angryEggplant = AngryEggplantScene.Instance<AngryEggplant>();
-        angryEggplant.GlobalPosition = new Vector2(RandomHelpers.RangeInt(100, 300), RandomHelpers.RangeInt(50, 150));
+        var angryEggplant = AngryEggplantScene.Instance<BaseAngry>();
+        angryEggplant.GlobalPosition = GetRandomPositionOnPlayArea();
         GetTree().Root.AddChild(angryEggplant);
     }
 
     private void SpawnAngryCorn()
     {
-        var angryCorn = AngryCornScene.Instance<AngryCorn>();
-        angryCorn.GlobalPosition = new Vector2(RandomHelpers.RangeInt(100, 300), RandomHelpers.RangeInt(50, 150));
+        var angryCorn = AngryCornScene.Instance<BaseAngry>();
+        angryCorn.GlobalPosition = GetRandomPositionOnPlayArea();
         GetTree().Root.AddChild(angryCorn);
     }
 
     private void SpawnWeeds()
     {
-        var numberOfSpawns = SpawnFactor * ((float)NumberOfDays * (float)NumberOfDays) + 1f;
+        var numberOfSpawns = (int)(SpawnFactor * ((float)NumberOfDays * (float)NumberOfDays) + 1f);
 
         for (var i = 0; i < numberOfSpawns; i++)
         {
@@ -232,10 +259,10 @@ public class PlayArea : Node2D
                 var randomIndex = RandomHelpers.RangeInt(0, DirtTiles.Count);
                 DirtTiles[randomIndex].ChangeGroup("Weed");
             }
-            else if (FertilzedTiles.Count > 0)
+            else if (FertilizedTiles.Count > 0)
             {
-                var randomIndex = RandomHelpers.RangeInt(0, FertilzedTiles.Count);
-                FertilzedTiles[randomIndex].ChangeGroup("Weed");
+                var randomIndex = RandomHelpers.RangeInt(0, FertilizedTiles.Count);
+                FertilizedTiles[randomIndex].ChangeGroup("Weed");
             }
             else if (GrassTiles.Count > 0)
             {
@@ -247,11 +274,10 @@ public class PlayArea : Node2D
                 var randomIndex = RandomHelpers.RangeInt(0, CornTiles.Count);
                 CornTiles[randomIndex].ChangeGroup("Weed");
             }
-            else
-            {
-                TriggerEndOfGame = true;
-            }
         }
+
+        UpdateTileGroupCount();
+        TriggerEndOfGame = WeedTiles.Count == Field.Count;
     }
 
     private void GrowCrops()
@@ -264,7 +290,7 @@ public class PlayArea : Node2D
             }
         }
 
-        foreach (var tile in FertilzedTiles)
+        foreach (var tile in FertilizedTiles)
         {
             if (RandomHelpers.DrawResult(3))
             {
@@ -297,7 +323,7 @@ public class PlayArea : Node2D
 
             if (spawnedAngriesCount < 3 && tile.Stage == 4)
             {
-                var angryPlant = AngryPlantScene.Instance<AngryPlant>();
+                var angryPlant = AngryPlantScene.Instance<BaseAngry>();
                 angryPlant.GlobalPosition = tile.GlobalPosition;
 
                 GetTree().Root.AddChild(angryPlant);
