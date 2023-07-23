@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Scyth.cs" type="Script" id=1]
 [ext_resource path="res://Assets/shuriken.png" type="Texture" id=2]
 [ext_resource path="res://Assets/shadow.png" type="Texture" id=3]
 [ext_resource path="res://Assets/frrt.org.ogg" type="AudioStream" id=4]
 [ext_resource path="res://Assets/white.png" type="Texture" id=5]
+[ext_resource path="res://Assets/thunk.wav" type="AudioStream" id=6]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -37,6 +38,7 @@ hue_variation = -0.24
 hue_variation_random = 0.99
 
 [node name="Scyth" type="RigidBody2D"]
+modulate = Color( 1, 1, 1, 0.662745 )
 collision_layer = 4
 collision_mask = 2
 mass = 0.01
@@ -77,6 +79,11 @@ texture = ExtResource( 5 )
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
 autoplay = true
+
+[node name="Thunk" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = -15.0
+pitch_scale = 1.1
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

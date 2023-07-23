@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Assets/shadow.png" type="Texture" id=1]
 [ext_resource path="res://Assets/angry-corn.png" type="Texture" id=2]
 [ext_resource path="res://BaseAngry.tscn" type="PackedScene" id=3]
-[ext_resource path="res://GoldCoin.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GoldCoinDrop.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ChestDrop.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 56.1427
@@ -14,7 +15,7 @@ radius = 56.0
 [node name="AngryCorn" instance=ExtResource( 3 )]
 Health = 12
 StartingForce = 20.0
-Drops = [ ExtResource( 4 ), ExtResource( 4 ) ]
+Drops = [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ) ]
 
 [node name="CollisionShape2D" parent="." index="1"]
 shape = SubResource( 2 )

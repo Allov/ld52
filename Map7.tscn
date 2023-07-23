@@ -1,0 +1,64 @@
+[gd_scene format=2]
+
+[node name="Map2" type="Node2D"]
+
+[node name="Walls2" type="StaticBody2D" parent="." groups=["Water"]]
+position = Vector2( 1032, 136 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 64
+collision_mask = 25
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
+position = Vector2( -8.00003, 7.99988 )
+polygon = PoolVector2Array( 7.50594, 7.75, 183.506, 7.7511, 183.505, 183.751, 7.50484, 183.75 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls2"]
+visible = false
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0.246567, -0.00292969, 192.989, -0.00170898, 192.988, 191.998, 0.245361, 191.997 )
+
+[node name="Walls3" type="StaticBody2D" parent="." groups=["Water"]]
+position = Vector2( 704, 128 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 64
+collision_mask = 25
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
+polygon = PoolVector2Array( 6.01993, 8.24805, 182.02, 8.24915, 182.019, 184.249, 6.01883, 184.248 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls3"]
+visible = false
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -0.0250244, -0.01474, 192.718, -0.0135193, 192.716, 191.986, -0.0262451, 191.985 )
+
+[node name="Walls4" type="StaticBody2D" parent="." groups=["Water"]]
+position = Vector2( 704, 456 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 64
+collision_mask = 25
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls4"]
+polygon = PoolVector2Array( 6.01993, 8.24805, 182.02, 8.24915, 182.019, 184.249, 6.01883, 184.248 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls4"]
+visible = false
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -0.0250244, -0.01474, 192.718, -0.0135193, 192.716, 191.986, -0.0262451, 191.985 )
+
+[node name="Walls5" type="StaticBody2D" parent="." groups=["Water"]]
+position = Vector2( 1024, 456 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 64
+collision_mask = 25
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls5"]
+polygon = PoolVector2Array( 6.01993, 8.24805, 182.02, 8.24915, 182.019, 184.249, 6.01883, 184.248 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls5"]
+visible = false
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -0.0250244, -0.01474, 192.718, -0.0135193, 192.716, 191.986, -0.0262451, 191.985 )

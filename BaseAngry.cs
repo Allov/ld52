@@ -50,12 +50,20 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
     {
         if (Spawned) return;
 
-        Spawned = true;
-        for (var i = 0; i < Drops.Length; i++)
+        while (!Spawned || RandomHelpers.DrawResult(5))
         {
-            var drop = Drops[i].Instance<BaseDrop>();
-            drop.GlobalPosition = GlobalPosition;
-            GetTree().Root.AddChild(drop);
+            if (Spawned)
+            {
+                GetNode<AudioStreamPlayer2D>("DoubleDrops").Play();
+            }
+
+            Spawned = true;
+            for (var i = 0; i < Drops.Length; i++)
+            {
+                var drop = Drops[i].Instance<BaseDrop>();
+                drop.GlobalPosition = GlobalPosition;
+                GetTree().Root.AddChild(drop);
+            }
         }
     }
 
@@ -65,8 +73,7 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
         {
             if (!area.IsInGroup("Weed"))
             {
-                tile.Stage = RandomHelpers.RangeInt(1, 3);
-                tile.ChangeGroup("Weed", true);
+                tile.Stomp();
             }
         }
     }
@@ -77,9 +84,9 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
         {
             var tween = new Tween();
             var sprite = GetNode<Sprite>("Sprite");
-            var v = new Vector2(1.3f, 1.3f);
-            tween.InterpolateProperty(sprite, "scale", Vector2.One*4f, v, .05f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
-            tween.InterpolateProperty(sprite, "scale", v, Vector2.One*4f, .05f, Tween.TransitionType.Sine, Tween.EaseType.InOut, .05f);
+            var v = new Vector2(4f * 1.1f, 4f * 1.1f);
+            tween.InterpolateProperty(sprite, "scale", Vector2.One * 4f, v, .05f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(sprite, "scale", v, Vector2.One * 4f, .05f, Tween.TransitionType.Sine, Tween.EaseType.InOut, .05f);
             AddChild(tween);
             tween.Start();
         }
@@ -104,6 +111,10 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
 
         GetNode<AnimationPlayer>("AnimationPlayer").Play("Hit");
         GetNode<AnimationPlayer>("AnimationPlayer").Queue("run");
+
+        var hitString = $"Hit{RandomHelpers.RangeInt(1, 3)}";
+        GetNode<AudioStreamPlayer2D>(hitString).PitchScale = (float)Math.Round((RandomHelpers.RangeDouble(.6D, .8D)), 1);
+        GetNode<AudioStreamPlayer2D>(hitString).Play();
 
     }
 

@@ -16,9 +16,10 @@ public class Scyth : RigidBody2D
 	private Sprite ShadowSprite;
 	private bool Dead;
 	public float LifeTime;
+    [Export] public int PiercingLeft = 1;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
 		BodyCollisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		((CircleShape2D)BodyCollisionShape.Shape).Radius = Size / 2;
@@ -52,41 +53,29 @@ public class Scyth : RigidBody2D
 		{
 			if (area.IsInGroup("Corn"))
 			{
-				tile.ChangeGroup("Dirt", true);
 				tile.Harvest();
 				OnCropHarvested?.Invoke(tile);
 			}
 
 			if (area.IsInGroup("Weed"))
 			{
-                GD.Print(tile.Stage);
-                tile.Stage--;
-                if (tile.Stage <= 0)
-                {
-                    tile.Stage = 0;
-				    tile.ChangeGroup("Dirt", true);
-                }
-                else
-                {
-                    tile.ModulateFromGroup(true);
-                }
-
-				tile.Cut();
+                tile.Cut();
 				OnWeedHarvested?.Invoke(tile);
 			}
 		}
 	}
 
-	public void _on_Area2D_body_entered(Node body)
+	public void _on_Area2D_body_entered(Node node)
 	{
-		if (body is IHittable hittable)
+		if (node is IHittable hittable)
 		{
 			hittable.Hit();
 		}
 
-		if (body is BaseAngry angry)
+		if (node is BaseAngry angry)
 		{
 			angry.Health = angry.Health - 1;
+            PiercingLeft--;
 
 			if (angry.Health <= 0)
 			{
@@ -95,8 +84,17 @@ public class Scyth : RigidBody2D
 				// body.QueueFree();
 			}
 
-			Dead = true;
+            if (PiercingLeft <= 0)
+            {
+                Dead = true;
+            }
+
 		}
+
+        if (node is StaticBody2D body)
+        {
+            GetNode<AudioStreamPlayer2D>("Thunk").Play();
+        }
 	}
 }
 

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Tile : Area2D
 {
@@ -14,9 +15,14 @@ public class Tile : Area2D
     private Sprite CornSprite;
     private Sprite WeedSprite;
     private Sprite WeedSprite2;
+    private Sprite WeedSprite3;
+    private Sprite WeedSprite4;
     private List<Sprite> AllSprites = new List<Sprite>();
-    internal int Stage;
+    public int Stage { get; private set; }
     private Sprite CurrentSprite;
+    [Export] public bool Disabled;
+    private Sprite DisabledSprite;
+    private Sprite WaterSprite;
 
     // Declare member variables here. Examples:
     // private int a = 2;
@@ -31,14 +37,22 @@ public class Tile : Area2D
         CornSprite = GetNode<Sprite>("Corn");
         WeedSprite = GetNode<Sprite>("Weed");
         WeedSprite2 = GetNode<Sprite>("Weed/Weed2");
+        WeedSprite3 = GetNode<Sprite>("Weed/Weed3");
+        WeedSprite4 = GetNode<Sprite>("Weed/Weed4");
+        DisabledSprite = GetNode<Sprite>("Disabled");
+        WaterSprite = GetNode<Sprite>("Water");
 
         AllSprites.AddRange(new[] {
+            WaterSprite,
+            DisabledSprite,
             DirtSprite,
             FertilizedSprite,
             GrassSprite,
             CornSprite,
             WeedSprite,
-            WeedSprite2
+            WeedSprite2,
+            WeedSprite3,
+            WeedSprite4,
         });
 
         HideAllSprites();
@@ -54,6 +68,13 @@ public class Tile : Area2D
 
     internal void ChangeGroup(string newGroup, bool doAnimation = false)
     {
+        if ((new [] { "Disabled", "WaterTile"}).Contains(CurrentGroup) && Disabled) return;
+
+        if (newGroup == "Dirt")
+        {
+            Stage = 0;
+        }
+
         if (CurrentGroup != "")
         {
             RemoveFromGroup(CurrentGroup);
@@ -71,20 +92,46 @@ public class Tile : Area2D
 
     public void Cut()
     {
+        if (Disabled) return;
+
+        Stage--;
+        if (Stage <= 0)
+        {
+            Stage = 0;
+            ChangeGroup("Dirt", true);
+        }
+        else
+        {
+            ModulateFromGroup(true);
+        }
+
         GetNode<AudioStreamPlayer2D>("WeedDeath").Play();
     }
 
     public void Harvest()
     {
+        if (Disabled) return;
+
+        ChangeGroup("Dirt", true);
         GetNode<AudioStreamPlayer2D>("Harvest").Play();
     }
 
 
     public void ModulateFromGroup(bool doAnimation = false)
     {
+        if (CurrentGroup == "Disabled" && Disabled) return;
+
         HideAllSprites();
         switch (CurrentGroup)
         {
+            case "WaterTile":
+                WaterSprite.Visible = true;
+                CurrentSprite = WaterSprite;
+                break;
+            case "Disabled":
+                DisabledSprite.Visible = true;
+                CurrentSprite = DisabledSprite;
+                break;
             case "Dirt":
                 DirtSprite.Visible = true;
                 CurrentSprite = DirtSprite;
@@ -104,6 +151,8 @@ public class Tile : Area2D
             case "Weed":
                 WeedSprite.Visible = Stage >= 0;
                 WeedSprite2.Visible = Stage >= 2 && Stage < 4;
+                WeedSprite3.Visible = Stage >= 4 && Stage < 6;
+                WeedSprite4.Visible = Stage >= 6;
                 CurrentSprite = WeedSprite;
                 break;
             default:
@@ -129,11 +178,45 @@ public class Tile : Area2D
         tween.QueueFree();
     }
 
-    internal void Harvest(int reward)
+    public void HarvestAnimation(int reward)
     {
+        if (Disabled) return;
+
         GetNode<CanvasLayer>("CanvasLayer").Offset = GlobalPosition;
         GetNode<Label>("CanvasLayer/HarvestLabel").Text = $"+{reward}";
         GetNode<AnimationPlayer>("AnimationPlayer").Play("money");
+    }
+
+    public void _on_Tile_body_entered(Node node)
+    {
+        if (node is StaticBody2D body)
+        {
+            if (body.IsInGroup("Water"))
+            {
+                ChangeGroup("WaterTile");
+            }
+            else
+            {
+                ChangeGroup("Disabled");
+            }
+
+            Disabled = true;
+        }
+    }
+
+    public void Grow()
+    {
+        if (Disabled) return;
+
+        Stage++;
+    }
+
+    public void Stomp()
+    {
+        if (Disabled) return;
+
+        Stage = RandomHelpers.RangeInt(1, 3);
+        ChangeGroup("Weed", true);
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

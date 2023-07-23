@@ -19,6 +19,9 @@ public class PlayArea : Node2D
     private List<Tile> DirtTiles;
     private List<Tile> CornTiles;
     private List<Tile> WeedTiles;
+    private List<Tile> DisabledTiles;
+    private List<Tile> WaterTiles;
+
     public int NumberOfDays { get; private set; }
     [Export] public NodePath DaysLabelNodePath;
     public Label DaysLabel;
@@ -44,6 +47,9 @@ public class PlayArea : Node2D
     [Export] public bool LockMouseToWindow = true;
     [Export] public NodePath CameraNodePath;
     public Camera Camera;
+    [Export] public NodePath AngriesNodePath;
+    public YSort Angries;
+    [Export] public PackedScene[] Maps;
 
 
     // Called when the node enters the scene tree for the first time.
@@ -55,11 +61,15 @@ public class PlayArea : Node2D
             // Input.SetMouseMode(Input.MouseMode.Visible);
         }
 
+        var map = Maps[RandomHelpers.RangeInt(0, Maps.Length)].Instance<Node2D>();
+        AddChild(map);
+
         DaysLabel = GetNode<Label>(DaysLabelNodePath);
         Player = GetNode<Player>(PlayerNodePath);
         Shop = GetNode<Shop>(ShopNodePath);
         GameOverPanel = GetNode<PanelContainer>(GameOverNodePath);
         Camera = GetNode<Camera>(CameraNodePath);
+        Angries = GetNode<YSort>(AngriesNodePath);
 
         var tween = new Tween();
         for (var y = 0; y < Height; y++)
@@ -165,6 +175,8 @@ public class PlayArea : Node2D
         DirtTiles = GetTree().GetNodesInGroup("Dirt").Cast<Tile>().ToList();
         CornTiles = GetTree().GetNodesInGroup("Corn").Cast<Tile>().ToList();
         WeedTiles = GetTree().GetNodesInGroup("Weed").Cast<Tile>().ToList();
+        DisabledTiles = GetTree().GetNodesInGroup("Disabled").Cast<Tile>().ToList();
+        WaterTiles = GetTree().GetNodesInGroup("WaterTile").Cast<Tile>().ToList();
     }
 
     private void SpawnAngries()
@@ -225,7 +237,7 @@ public class PlayArea : Node2D
     {
         var angryPlant = AngryPlantScene.Instance<BaseAngry>();
         angryPlant.GlobalPosition = GetRandomPositionOnPlayArea();
-        GetTree().Root.AddChild(angryPlant);
+        Angries.AddChild(angryPlant);
     }
 
     private static Vector2 GetRandomPositionOnPlayArea()
@@ -237,21 +249,21 @@ public class PlayArea : Node2D
     {
         var angryTomato = AngryTomatoScene.Instance<BaseAngry>();
         angryTomato.GlobalPosition = GetRandomPositionOnPlayArea();
-        GetTree().Root.AddChild(angryTomato);
+        Angries.AddChild(angryTomato);
     }
 
     private void SpawnAngryEggplant()
     {
         var angryEggplant = AngryEggplantScene.Instance<BaseAngry>();
         angryEggplant.GlobalPosition = GetRandomPositionOnPlayArea();
-        GetTree().Root.AddChild(angryEggplant);
+        Angries.AddChild(angryEggplant);
     }
 
     private void SpawnAngryCorn()
     {
         var angryCorn = AngryCornScene.Instance<BaseAngry>();
         angryCorn.GlobalPosition = GetRandomPositionOnPlayArea();
-        GetTree().Root.AddChild(angryCorn);
+        Angries.AddChild(angryCorn);
     }
 
     private void SpawnWeeds()
@@ -283,7 +295,8 @@ public class PlayArea : Node2D
         }
 
         UpdateTileGroupCount();
-        TriggerEndOfGame = WeedTiles.Count >= Field.Count * PercentEndGame;
+        var fieldCount = Field.Count - WaterTiles.Count - DisabledTiles.Count;
+        TriggerEndOfGame = WeedTiles.Count >=  fieldCount * PercentEndGame;
     }
 
     private void GrowCrops()
@@ -311,7 +324,7 @@ public class PlayArea : Node2D
         var spawnedAngriesCount = 0;
         foreach (var tile in WeedTiles)
         {
-            tile.Stage++;
+            tile.Grow();
             neighbors[0] = Width * (tile.Y - 1) + tile.X;
             neighbors[1] = Width * (tile.Y + 1) + tile.X;
             neighbors[2] = Width * (tile.Y) + tile.X + 1;
@@ -327,20 +340,18 @@ public class PlayArea : Node2D
 
             tile.ModulateFromGroup();
 
-            if (spawnedAngriesCount < 3 && tile.Stage >= 4)
+            if (tile.Stage >= 4 && RandomHelpers.DrawResult(2))
             {
                 SpawnAngryPlant();
-                spawnedAngriesCount++;
-                GD.Print(spawnedAngriesCount);
             }
-            else if (spawnedAngriesCount == 3 && tile.Stage >= 4)
+            else if (tile.Stage >= 6 && RandomHelpers.DrawResult(5))
             {
                 SpawnAngryCorn();
-                spawnedAngriesCount++;
             }
-            else if (spawnedAngriesCount >= 4 && tile.Stage >= 4)
+            else if (tile.Stage >= 8)
             {
-                SpawnAngryPlant();
+                SpawnAngryEggplant();
+                tile.ChangeGroup("Dirt");
             }
 
         }

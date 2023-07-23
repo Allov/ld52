@@ -116,10 +116,12 @@ radius = 128.25
 [node name="Player" type="KinematicBody2D"]
 collision_mask = 0
 script = ExtResource( 3 )
+AddedGrowRadius = 16.0
 ActionForce = Vector2( 640, 640 )
 ScythScene = ExtResource( 2 )
+dashDuration = 0.1
 ScythCount = 1
-GoldCoins = 50
+GoldCoins = 5000
 
 [node name="Sprite3" type="Sprite" parent="."]
 modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
@@ -182,6 +184,6 @@ angular_damp = 0.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttrackArea"]
 shape = SubResource( 12 )
 
-[connection signal="area_exited" from="Area2D" to="." method="_on_Area2D_area_exited"]
+[connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
 [connection signal="body_entered" from="PickUpArea" to="." method="_on_PickUpArea_body_entered"]
 [connection signal="body_entered" from="AttrackArea" to="." method="_on_AttrackArea_body_entered"]

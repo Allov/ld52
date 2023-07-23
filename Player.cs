@@ -17,7 +17,7 @@ public class Player : KinematicBody2D
     [Export]
     public float friction = 6; // Friction applied when the ninja stops moving
 
-    private Vector2 Velocity; // Current velocity of the ninja    
+    private Vector2 Velocity; // Current velocity of the ninja
 
     [Export]
     public float dashSpeed = 400; // Speed at which the ninja dashes
@@ -45,6 +45,8 @@ public class Player : KinematicBody2D
     public bool WeedStomper;
     public bool WeedKiller;
 
+    [Export] public float AddedGrowRadius { get; set; }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -68,7 +70,7 @@ public class Player : KinematicBody2D
 
         var attackingController = (horizontalAttack != 0 || verticalAttack != 0);;
 
-        
+
         var direction = (GetGlobalMousePosition() - GlobalPosition).Normalized();
 
         if (attackingController)
@@ -85,6 +87,14 @@ public class Player : KinematicBody2D
                 scyth.LifeTime = ShurikenLifeTime;
                 scyth.Size = ShurikenSize*4;
                 scyth.GlobalPosition = GlobalPosition + direction.Rotated(Mathf.Pi / 2f) * (ScythCount - (i + 1)) * (ShurikenSize*4);
+                if (ActivePerks.Any(p => (new [] {"piercing-1"}).Contains(p.Id)))
+                {
+                    scyth.PiercingLeft = 2;
+                }
+                else if (ActivePerks.Any(p => (new [] {"piercing-2"}).Contains(p.Id)))
+                {
+                    scyth.PiercingLeft = 10;
+                }
                 GetTree().Root.AddChild(scyth);
 
                 scyth.ApplyCentralImpulse(direction * ActionForce);
@@ -105,6 +115,12 @@ public class Player : KinematicBody2D
             DashParticle.OneShot = true;
             DashParticle.Emitting = true;
             DashParticle.Restart();
+
+            var areas = GetNode<Area2D>("Area2D").GetOverlappingAreas().Cast<Area2D>();
+            foreach(var area in areas)
+            {
+                TileSoil(area);
+            }
         }
 
         GetNode<Sprite>("Sprite").FlipH = Velocity.x < 0;
@@ -180,12 +196,22 @@ public class Player : KinematicBody2D
 
         var amount = 10 + BonusCropGold;
 
-        tile.Harvest(amount);
-        GoldCoins = GoldCoins + amount;
+        tile.HarvestAnimation(amount);
 
+        AwardGoldCoins(amount);
     }
 
-    public void _on_Area2D_area_exited(Area2D area)
+    public void AwardGoldCoins(int amount)
+    {
+        GoldCoins = GoldCoins + amount;
+    }
+
+    public void _on_Area2D_area_entered(Area2D area)
+    {
+        TileSoil(area);
+    }
+
+    private void TileSoil(Area2D area)
     {
         if (area is Tile tile)
         {
@@ -229,7 +255,16 @@ public class Player : KinematicBody2D
         if (node is BaseDrop drop)
         {
             drop.PickUp();
-            GoldCoins += drop.GoldCoinValue;
+
+            if (drop.Name == "ChestDrop")
+            {
+                GD.Print("Award Item");
+            }
+            else
+            {
+                AwardGoldCoins(drop.GoldCoinValue);
+            }
+
         }
     }
 
@@ -248,6 +283,6 @@ public class Player : KinematicBody2D
 
     public void GrowSize()
     {
-        ((CircleShape2D)AreaCollisionShape.Shape).Radius += (2f);
+        ((CircleShape2D)AreaCollisionShape.Shape).Radius += AddedGrowRadius;
     }
 }

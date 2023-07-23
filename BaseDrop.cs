@@ -9,10 +9,12 @@ public class BaseDrop : RigidBody2D
 
     [Export] public Vector2 StartingForce { get; private set; }
     public bool PickedUp { get; private set; }
+    [Export] public int Chances = 1; // 1 = 100%, 20 = 1/20
 
     public override void _Ready()
     {
         base._Ready();
+        if (!RandomHelpers.DrawResult(Chances)) QueueFree();
 
         float angle = (float)RandomHelpers.NextDouble() * Mathf.Pi * 2;
 
@@ -49,7 +51,7 @@ public class BaseDrop : RigidBody2D
         {
             QueueFree();
         }
-        else if (PickedUpAndReadyToDie) 
+        else if (PickedUpAndReadyToDie)
         {
             DeadTimer -= delta;
         }
