@@ -16,20 +16,41 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
 
     [Export] public int GoldDrop;
     [Export] public PackedScene[] Drops;
+    private bool DeadDead;
+    private bool Spawned;
 
     public override void _Process(float delta)
     {
         if (Dead)
         {
+            if (GetNode<AnimationPlayer>("AnimationPlayer").CurrentAnimation != "death")
+            {
+                GetNode<AnimationPlayer>("AnimationPlayer").Play("death");
+            }
             SpawnDrops();
+        }
+
+        if (DeadDead)
+        {
             QueueFree();
         }
 
         GetNode<TextureProgress>("Health").Value = Health;
     }
 
+    protected void _on_AnimationPlayer_animation_finished(string name)
+    {
+        if (Dead && name == "death")
+        {
+            DeadDead = true;
+        }
+    }
+
     private void SpawnDrops()
     {
+        if (Spawned) return;
+
+        Spawned = true;
         for (var i = 0; i < Drops.Length; i++)
         {
             var drop = Drops[i].Instance<BaseDrop>();
@@ -79,6 +100,11 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
 
     public void Hit()
     {
+        if (Dead) return;
+
+        GetNode<AnimationPlayer>("AnimationPlayer").Play("Hit");
+        GetNode<AnimationPlayer>("AnimationPlayer").Queue("run");
+
     }
 
     public void Kill()

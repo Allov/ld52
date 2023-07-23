@@ -1,0 +1,4 @@
+[*.cs]
+indent_style = space
+trim_trailing_whitespace = true
+indent_size = 4

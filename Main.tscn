@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://AngryTomato.tscn" type="PackedScene" id=4]
 [ext_resource path="res://AngryCorn.tscn" type="PackedScene" id=5]
 [ext_resource path="res://AngryEggplant.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Camera.cs" type="Script" id=7]
 [ext_resource path="res://font.tres" type="DynamicFont" id=8]
 [ext_resource path="res://PlayArea.cs" type="Script" id=9]
 [ext_resource path="res://Assets/splash.png" type="Texture" id=11]
@@ -68,7 +69,7 @@ shader = ExtResource( 17 )
 shader_param/player_position = Vector2( 0.5, 0.5 )
 shader_param/color = Color( 0.0901961, 0.0901961, 0.0980392, 1 )
 shader_param/MULTIPLIER = 0.56
-shader_param/SCALE = 1.5
+shader_param/SCALE = 1.2
 shader_param/SOFTNESS = 0.65
 
 [sub_resource type="DynamicFontData" id=17]
@@ -89,12 +90,18 @@ adjustment_enabled = true
 [node name="Main" type="Node2D"]
 scale = Vector2( 1, 0.996147 )
 
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2( 764, 401.547 )
+current = true
+script = ExtResource( 7 )
+
 [node name="World" type="Node2D" parent="."]
 
 [node name="PlayArea" type="Node2D" parent="World"]
 position = Vector2( 0, 64.2476 )
 script = ExtResource( 9 )
 TileScene = ExtResource( 3 )
+GrowTime = 8.0
 DaysLabelNodePath = NodePath("../../UI/CalendarLabel")
 PlayerNodePath = NodePath("../Player")
 ShopNodePath = NodePath("../../UI/Shop")
@@ -104,21 +111,54 @@ AngryTomatoScene = ExtResource( 4 )
 AngryEggplantScene = ExtResource( 6 )
 GameOverNodePath = NodePath("../../UI/GameOver")
 LockMouseToWindow = false
+CameraNodePath = NodePath("../../Camera")
 
 [node name="Walls" type="StaticBody2D" parent="World/PlayArea"]
+z_index = 1
 collision_layer = 2
 collision_mask = 13
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/PlayArea/Walls"]
 position = Vector2( 0, -8 )
-polygon = PoolVector2Array( 0, 811.094, 1536, 811.094, 1536, 8, 0, 8, 0, -56, 1600, -56, 1600, 968, -64, 968, -64, 8, 0, 8 )
+polygon = PoolVector2Array( 0, 778.971, 1536, 778.971, 1536, 8, 0, 8, 0, -56, 1600, -56, 1600, 968, -64, 968, -64, 8, 0, 8 )
+
+[node name="Map3" type="Node2D" parent="World/PlayArea"]
+
+[node name="Walls2" type="StaticBody2D" parent="World/PlayArea/Map3"]
+position = Vector2( 1343.75, 192.494 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/PlayArea/Map3/Walls2"]
+polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
+
+[node name="Polygon2D" type="Polygon2D" parent="World/PlayArea/Map3/Walls2"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
+
+[node name="Walls3" type="StaticBody2D" parent="World/PlayArea/Map3"]
+position = Vector2( 388.319, 192.742 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="World/PlayArea/Map3/Walls3"]
+polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
+
+[node name="Polygon2D" type="Polygon2D" parent="World/PlayArea/Map3/Walls3"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
 
 [node name="Player" parent="World" instance=ExtResource( 1 )]
-position = Vector2( 740, 819.156 )
+position = Vector2( 784, 480.853 )
 ShootTime = 0.25
 
 [node name="UI" type="CanvasLayer" parent="."]
 pause_mode = 2
+layer = 100
 script = ExtResource( 15 )
 PlayAreaNode = NodePath("../World/PlayArea")
 
@@ -469,10 +509,6 @@ __meta__ = {
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 13 )
-
-[node name="AngryPlant" parent="." instance=ExtResource( 2 )]
-position = Vector2( 592, 401.547 )
-GoldDrop = 10
 
 [connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item0/Buy" to="UI/Shop" method="_on_Buy_Item1_pressed"]
 [connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item1/Buy" to="UI/Shop" method="_on_Buy_Item2_pressed"]

@@ -42,6 +42,8 @@ public class PlayArea : Node2D
     private bool UserPaused;
     [Export] public int SpawnFrequency = 4;
     [Export] public bool LockMouseToWindow = true;
+    [Export] public NodePath CameraNodePath;
+    public Camera Camera;
 
 
     // Called when the node enters the scene tree for the first time.
@@ -57,6 +59,7 @@ public class PlayArea : Node2D
         Player = GetNode<Player>(PlayerNodePath);
         Shop = GetNode<Shop>(ShopNodePath);
         GameOverPanel = GetNode<PanelContainer>(GameOverNodePath);
+        Camera = GetNode<Camera>(CameraNodePath);
 
         var tween = new Tween();
         for (var y = 0; y < Height; y++)
@@ -98,7 +101,7 @@ public class PlayArea : Node2D
 
                 Field.Add(tile.PositionIndex, tile);
 
-				
+
 				// GD.Print(tile.X, tile.Y, tile.PositionIndex);
 
             }
@@ -170,23 +173,26 @@ public class PlayArea : Node2D
         if (NumberOfDays == 5)
         {
             SpawnAngryPlant();
+            Camera.Shake(1.4f, 2f);
         }
 
         if (NumberOfDays == 10)
         {
             SpawnAngryPlant();
             SpawnAngryPlant();
+            Camera.Shake(1.4f, 2f);
         }
 
         if (!Day15Done && (NumberOfDays == 15 || weedRatio > .7f))
         {
             Day15Done = true;
-            // for (var i = 0; i < 1; i++)
-            // {
-            //     SpawnAngryPlant();
-            // }
+            for (var i = 0; i < 5; i++)
+            {
+                SpawnAngryPlant();
+            }
 
             SpawnAngryCorn();
+            Camera.Shake(2f, 3f);
         }
 
         else if (NumberOfDays >= 20 && NumberOfDays % 5 == 0)
@@ -211,6 +217,7 @@ public class PlayArea : Node2D
             {
                 SpawnAngryEggplant();
             }
+            Camera.Shake(2f, 3f);
         }
     }
 
@@ -320,14 +327,22 @@ public class PlayArea : Node2D
 
             tile.ModulateFromGroup();
 
-            if (spawnedAngriesCount < 3 && tile.Stage == 4)
+            if (spawnedAngriesCount < 3 && tile.Stage >= 4)
             {
-                var angryPlant = AngryPlantScene.Instance<BaseAngry>();
-                angryPlant.GlobalPosition = tile.GlobalPosition;
-
-                GetTree().Root.AddChild(angryPlant);
+                SpawnAngryPlant();
+                spawnedAngriesCount++;
+                GD.Print(spawnedAngriesCount);
+            }
+            else if (spawnedAngriesCount == 3 && tile.Stage >= 4)
+            {
+                SpawnAngryCorn();
                 spawnedAngriesCount++;
             }
+            else if (spawnedAngriesCount >= 4 && tile.Stage >= 4)
+            {
+                SpawnAngryPlant();
+            }
+
         }
     }
 }

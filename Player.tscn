@@ -177,7 +177,6 @@ space_override = 1
 gravity_point = true
 gravity_vec = Vector2( 0, 0 )
 gravity = 900.0
-linear_damp = 0.0
 angular_damp = 0.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttrackArea"]

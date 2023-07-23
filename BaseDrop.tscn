@@ -115,7 +115,7 @@ physics_material_override = SubResource( 2 )
 linear_damp = 0.8
 angular_damp = 0.2
 script = ExtResource( 1 )
-StartingForce = Vector2( 175, 175 )
+StartingForce = Vector2( 35, 35 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
@@ -133,10 +133,8 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -768.0
-margin_top = -432.0
-margin_right = -656.0
-margin_bottom = -385.0
+margin_right = 112.0
+margin_bottom = 47.0
 rect_scale = Vector2( 1.1, 1.1 )
 custom_fonts/font = SubResource( 6 )
 text = "+10"

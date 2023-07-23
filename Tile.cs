@@ -119,8 +119,8 @@ public class Tile : Area2D
     private async void DoAnimation()
     {
         var tween = new Tween();
-        // tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One * 4f, .2f, Tween.TransitionType.Linear, Tween.EaseType.In);
-        tween.InterpolateProperty(CurrentSprite, "modulate:a", 0f, 1f, .2f, Tween.TransitionType.Sine, Tween.EaseType.In);
+        tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One * 4f, .2f, Tween.TransitionType.Linear, Tween.EaseType.In);
+        tween.InterpolateProperty(CurrentSprite, "modulate:a", .7f, 1f, .1f, Tween.TransitionType.Sine, Tween.EaseType.In);
         AddChild(tween);
         tween.Start();
 
@@ -139,6 +139,6 @@ public class Tile : Area2D
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {
-    //      
+    //
     //  }
 }

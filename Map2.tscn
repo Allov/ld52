@@ -1,0 +1,31 @@
+[gd_scene format=2]
+
+[node name="Map2" type="Node2D"]
+
+[node name="Walls2" type="StaticBody2D" parent="."]
+position = Vector2( 1343.75, 192.494 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
+polygon = PoolVector2Array( 0.246567, -0.00292969, 192.989, -0.00170898, 192.988, 191.998, 0.245361, 191.997 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls2"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0.246567, -0.00292969, 192.989, -0.00170898, 192.988, 191.998, 0.245361, 191.997 )
+
+[node name="Walls3" type="StaticBody2D" parent="."]
+position = Vector2( 384.248, 385.98 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
+polygon = PoolVector2Array( -0.0250244, -0.01474, 192.718, -0.0135193, 192.716, 191.986, -0.0262451, 191.985 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls3"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -0.0250244, -0.01474, 192.718, -0.0135193, 192.716, 191.986, -0.0262451, 191.985 )

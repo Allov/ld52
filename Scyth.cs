@@ -53,13 +53,24 @@ public class Scyth : RigidBody2D
 			if (area.IsInGroup("Corn"))
 			{
 				tile.ChangeGroup("Dirt", true);
-				tile.Harvest();                
+				tile.Harvest();
 				OnCropHarvested?.Invoke(tile);
 			}
 
 			if (area.IsInGroup("Weed"))
 			{
-				tile.ChangeGroup("Dirt", true);
+                GD.Print(tile.Stage);
+                tile.Stage--;
+                if (tile.Stage <= 0)
+                {
+                    tile.Stage = 0;
+				    tile.ChangeGroup("Dirt", true);
+                }
+                else
+                {
+                    tile.ModulateFromGroup(true);
+                }
+
 				tile.Cut();
 				OnWeedHarvested?.Invoke(tile);
 			}

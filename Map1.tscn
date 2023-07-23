@@ -1,0 +1,85 @@
+[gd_scene format=2]
+
+[node name="Map1" type="Node2D"]
+
+[node name="Walls2" type="StaticBody2D" parent="."]
+position = Vector2( 1218.01, 129.052 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls2"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Walls3" type="StaticBody2D" parent="."]
+position = Vector2( 256.186, 128.495 )
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls3"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Walls4" type="StaticBody2D" parent="."]
+position = Vector2( 255.753, 642.046 )
+rotation = -1.57079
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls4"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls4"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Walls5" type="StaticBody2D" parent="."]
+position = Vector2( 1216.19, 642.476 )
+rotation = -3.14159
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls5"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls5"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Walls6" type="StaticBody2D" parent="."]
+position = Vector2( 960.186, 578.228 )
+rotation = -3.14159
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls6"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls6"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Walls7" type="StaticBody2D" parent="."]
+position = Vector2( 512.186, 256.99 )
+z_index = 1
+collision_layer = 2
+collision_mask = 13
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls7"]
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls7"]
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64, 64.2475, 64, 192.743, 0, 192.743 )
