@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public interface IHealth
@@ -5,16 +6,36 @@ public interface IHealth
     int Health { get; set; }
 }
 
-public class BaseAngry : RigidBody2D, IHealth
+public class BaseAngry : RigidBody2D, IHealth, IHittable
 {
     [Export] public float StartingForce = 10f;
     public Cooldown EnrageCooldown;
     public float EnrageTime = 5000f;
     [Export] public int Health { get; set; } = 10;
+    public bool Dead { get; private set; }
+
+    [Export] public int GoldDrop;
+    [Export] public PackedScene[] Drops;
 
     public override void _Process(float delta)
     {
+        if (Dead)
+        {
+            SpawnDrops();
+            QueueFree();
+        }
+
         GetNode<TextureProgress>("Health").Value = Health;
+    }
+
+    private void SpawnDrops()
+    {
+        for (var i = 0; i < Drops.Length; i++)
+        {
+            var drop = Drops[i].Instance<BaseDrop>();
+            drop.GlobalPosition = GlobalPosition;
+            GetTree().Root.AddChild(drop);
+        }
     }
 
     public void _on_Area2D_area_entered(Area2D area)
@@ -31,7 +52,6 @@ public class BaseAngry : RigidBody2D, IHealth
 
     public void _on_BaseAngry_body_entered(Node node)
     {
-        GD.Print("hello");
         if (node is StaticBody2D)
         {
             var tween = new Tween();
@@ -57,4 +77,12 @@ public class BaseAngry : RigidBody2D, IHealth
         GetNode<Particles2D>("SpawnParticle").Emitting = true;
     }
 
+    public void Hit()
+    {
+    }
+
+    public void Kill()
+    {
+        Dead = true;
+    }
 }

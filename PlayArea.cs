@@ -5,9 +5,10 @@ using System.Linq;
 
 public class PlayArea : Node2D
 {
-    [Export] public int Width = (384 * 4) / 2;
-    [Export] public int Height = (216 * 4) / 2;
-    [Export] public int TileSize = 2;
+    [Export] public float PercentEndGame = .9f;
+    [Export] public int Width = 24;
+    [Export] public int Height = 12;
+    [Export] public int TileSize = 64;
     [Export] public PackedScene TileScene;
     private Cooldown GrowCooldown;
     [Export] public float GrowTime = 5f;
@@ -18,7 +19,7 @@ public class PlayArea : Node2D
     private List<Tile> DirtTiles;
     private List<Tile> CornTiles;
     private List<Tile> WeedTiles;
-    private int NumberOfDays;
+    public int NumberOfDays { get; private set; }
     [Export] public NodePath DaysLabelNodePath;
     public Label DaysLabel;
     public Player Player;
@@ -51,8 +52,6 @@ public class PlayArea : Node2D
             Input.SetMouseMode(Input.MouseMode.Confined);
             // Input.SetMouseMode(Input.MouseMode.Visible);
         }
-
-		GD.Print("Play!", this);
 
         DaysLabel = GetNode<Label>(DaysLabelNodePath);
         Player = GetNode<Player>(PlayerNodePath);
@@ -116,7 +115,7 @@ public class PlayArea : Node2D
 
     private void UpdateUi()
     {
-        DaysLabel.Text = $"Day: {NumberOfDays} Crops: {Player.HarvestedCropsCount} Weeds (cut): {Player.HavestedWeedCount} Weeds % {(((float)(WeedTiles?.Count).GetValueOrDefault(0) / (float)Field.Count) * 100f).ToString("0.00")} $ {Player.GoldCoins}";
+       // DaysLabel.Text = $"Day: {NumberOfDays} Crops: {Player.HarvestedCropsCount} Weeds (cut): {Player.HavestedWeedCount} Weeds % {(((float)(WeedTiles?.Count).GetValueOrDefault(0) / (float)Field.Count) * 100f).ToString("0.00")} $ {Player.GoldCoins}";
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -277,7 +276,7 @@ public class PlayArea : Node2D
         }
 
         UpdateTileGroupCount();
-        TriggerEndOfGame = WeedTiles.Count == Field.Count;
+        TriggerEndOfGame = WeedTiles.Count >= Field.Count * PercentEndGame;
     }
 
     private void GrowCrops()

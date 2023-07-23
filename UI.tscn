@@ -2,11 +2,11 @@
 
 [ext_resource path="res://AsepriteFont.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://font.tres" type="DynamicFont" id=2]
-[ext_resource path="res://splash.png" type="Texture" id=3]
+[ext_resource path="res://Assets/splash.png" type="Texture" id=3]
 [ext_resource path="res://Shop.cs" type="Script" id=4]
 [ext_resource path="res://UI.cs" type="Script" id=5]
 [ext_resource path="res://Vignette.gdshader" type="Shader" id=6]
-[ext_resource path="res://shuriken.png" type="Texture" id=7]
+[ext_resource path="res://Assets/shuriken.png" type="Texture" id=7]
 
 [sub_resource type="Animation" id=11]
 length = 0.15

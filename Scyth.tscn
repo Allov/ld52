@@ -1,10 +1,10 @@
 [gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scyth.cs" type="Script" id=1]
-[ext_resource path="res://shuriken.png" type="Texture" id=2]
-[ext_resource path="res://shadow.png" type="Texture" id=3]
-[ext_resource path="res://frrt.org.ogg" type="AudioStream" id=4]
-[ext_resource path="res://white.png" type="Texture" id=5]
+[ext_resource path="res://Assets/shuriken.png" type="Texture" id=2]
+[ext_resource path="res://Assets/shadow.png" type="Texture" id=3]
+[ext_resource path="res://Assets/frrt.org.ogg" type="AudioStream" id=4]
+[ext_resource path="res://Assets/white.png" type="Texture" id=5]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0

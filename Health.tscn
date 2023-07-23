@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://white.png" type="Texture" id=1]
+[ext_resource path="res://Assets/white.png" type="Texture" id=1]
 
 [node name="Health" type="TextureProgress"]
 margin_left = -8.0

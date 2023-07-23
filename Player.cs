@@ -17,7 +17,7 @@ public class Player : KinematicBody2D
     [Export]
     public float friction = 6; // Friction applied when the ninja stops moving
 
-    private Vector2 velocity; // Current velocity of the ninja    
+    private Vector2 Velocity; // Current velocity of the ninja    
 
     [Export]
     public float dashSpeed = 400; // Speed at which the ninja dashes
@@ -57,11 +57,29 @@ public class Player : KinematicBody2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
-        if (Input.IsActionPressed("ui_accept") && ShootCooldown.Use())
+        // Get input from the player
+        var horizontalInput = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
+        var verticalInput = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
+
+        var moving = (horizontalInput != 0 || verticalInput != 0);
+
+        var horizontalAttack = Input.GetActionStrength("attack_right") - Input.GetActionStrength("attack_left");
+        var verticalAttack = Input.GetActionStrength("attack_down") - Input.GetActionStrength("attack_up");
+
+        var attackingController = (horizontalAttack != 0 || verticalAttack != 0);;
+
+        
+        var direction = (GetGlobalMousePosition() - GlobalPosition).Normalized();
+
+        if (attackingController)
+        {
+            direction = new Vector2(horizontalAttack, verticalAttack).Normalized();
+        }
+
+        if ((Input.IsActionPressed("attack") || attackingController) && ShootCooldown.Use())
         {
             for (var i = 0; i < ScythCount; i++)
             {
-                var direction = (GetGlobalMousePosition() - GlobalPosition).Normalized();
 
                 var scyth = ScythScene.Instance<Scyth>();
                 scyth.LifeTime = ShurikenLifeTime;
@@ -78,11 +96,7 @@ public class Player : KinematicBody2D
             }
         }
 
-        // Get input from the player
-        float horizontalInput = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
-        float verticalInput = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
-
-        bool moving = (horizontalInput != 0 || verticalInput != 0);
+        GetNode<Sprite>("Sprite3").LookAt(GlobalPosition + direction);
 
         // Calculate the new velocity based on the input
         if (Input.IsActionJustPressed("dash") && moving && DashCooldown.Use())
@@ -93,7 +107,7 @@ public class Player : KinematicBody2D
             DashParticle.Restart();
         }
 
-        GetNode<Sprite>("Sprite").FlipH = velocity.x < 0;
+        GetNode<Sprite>("Sprite").FlipH = Velocity.x < 0;
 
         var adjustedSpeed = speed;
 
@@ -105,7 +119,7 @@ public class Player : KinematicBody2D
             dashTimer -= delta;
             adjustedSpeed = speed + dashSpeed;
             var angle = 2f * Mathf.Pi / dashDuration * delta;
-            GetNode<Sprite>("Sprite").Rotate(velocity.Normalized().x > 0 ? angle : -angle);
+            GetNode<Sprite>("Sprite").Rotate(Velocity.Normalized().x > 0 ? angle : -angle);
         }
 
         if (ThornTimer > 0f)
@@ -125,34 +139,16 @@ public class Player : KinematicBody2D
             GetNode<Sprite>("Sprite").Position = Vector2.Zero;
         }
 
-        velocity.x = Mathf.Lerp(velocity.x, horizontalInput * adjustedSpeed, delta * friction);
-        velocity.y = Mathf.Lerp(velocity.y, verticalInput * adjustedSpeed, delta * friction);
+        Velocity.x = Mathf.Lerp(Velocity.x, horizontalInput * adjustedSpeed, delta * friction);
+        Velocity.y = Mathf.Lerp(Velocity.y, verticalInput * adjustedSpeed, delta * friction);
 
         // Move the ninja using the new velocity
-        velocity = MoveAndSlide(velocity);
+        Velocity = MoveAndSlide(Velocity);
     }
 
-    private void OnAngryKilled(object sender, EventArgs e)
+    private void OnAngryKilled(BaseAngry baseAngry)
     {
-        if (sender is Type type)
-        {
-            // if (type == typeof(AngryEggplant))
-            // {
-            //     GoldCoins += 25;
-            // }
-            // if (type == typeof(AngryCorn))
-            // {
-            //     GoldCoins += 50;
-            // }
-            // if (type == typeof(AngryTomato))
-            // {
-            //     GoldCoins += 500;
-            // }
-            // if (type == typeof(AngryEggplant))
-            // {
-            //     GoldCoins += 1000;
-            // }
-        }
+        GoldCoins += baseAngry.GoldDrop;
     }
 
     private void OnWeedHarvested(Tile tile)
@@ -228,12 +224,29 @@ public class Player : KinematicBody2D
         }
     }
 
-    internal void AddPerk(Perk perk)
+    public void _on_PickUpArea_body_entered(Node node)
+    {
+        if (node is BaseDrop drop)
+        {
+            drop.PickUp();
+            GoldCoins += drop.GoldCoinValue;
+        }
+    }
+
+    public void _on_AttrackArea_body_entered(Node node)
+    {
+        if (node is RigidBody2D body)
+        {
+            body.ApplyCentralImpulse((body.GlobalPosition - body.GlobalPosition).Normalized());
+        }
+    }
+
+    public void AddPerk(Perk perk)
     {
         ActivePerks.Add(perk);
     }
 
-    internal void GrowSize()
+    public void GrowSize()
     {
         ((CircleShape2D)AreaCollisionShape.Shape).Radius += (2f);
     }

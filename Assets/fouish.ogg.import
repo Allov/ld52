@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/fouish.ogg-0f79bef17f02ced3c8f8415f4a2e3f6d.oggstr"
+
+[deps]
+
+source_file="res://Assets/fouish.ogg"
+dest_files=[ "res://.import/fouish.ogg-0f79bef17f02ced3c8f8415f4a2e3f6d.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/samurai-opening.ogg-475c0e0efc4a308affee033466c01745.oggstr"
+
+[deps]
+
+source_file="res://Assets/samurai-opening.ogg"
+dest_files=[ "res://.import/samurai-opening.ogg-475c0e0efc4a308affee033466c01745.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
