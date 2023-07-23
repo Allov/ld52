@@ -30,8 +30,8 @@ public class Shop : PanelContainer
 	public void Buy(int index)
 	{
 		var boughtPerk = BuyablePerks[index];
-		boughtPerk.Effect(this, boughtPerk);
 		Player.GoldCoins = Player.GoldCoins - boughtPerk.Cost;
+		boughtPerk.Effect(this, boughtPerk);
 		Player.AddPerk(boughtPerk);
 
 		if (boughtPerk.Unique)
