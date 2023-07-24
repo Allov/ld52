@@ -46,6 +46,7 @@ public class Player : KinematicBody2D
     public bool WeedKiller;
 
     [Export] public float AddedGrowRadius { get; set; }
+    public float Size { get; private set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -54,6 +55,7 @@ public class Player : KinematicBody2D
         DashCooldown = new Cooldown(dashTime, this);
         DashParticle = GetNode<Particles2D>("Dash");
         AreaCollisionShape = GetNode<CollisionShape2D>("Area2D/CollisionShape2D");
+        Size = ((CircleShape2D)AreaCollisionShape.Shape).Radius;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -142,6 +144,10 @@ public class Player : KinematicBody2D
         {
             ThornTimer -= delta;
             adjustedSpeed *= ThornFactor;
+        }
+        else
+        {
+            ThornTimer = 0f;
         }
 
         if (moving && dashTimer <= 0)
@@ -283,6 +289,6 @@ public class Player : KinematicBody2D
 
     public void GrowSize()
     {
-        ((CircleShape2D)AreaCollisionShape.Shape).Radius += AddedGrowRadius;
+        Size = ((CircleShape2D)AreaCollisionShape.Shape).Radius += AddedGrowRadius;
     }
 }

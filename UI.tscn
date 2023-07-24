@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=2]
 
-[ext_resource path="res://AsepriteFont.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://SyneMono-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://font.tres" type="DynamicFont" id=2]
 [ext_resource path="res://Assets/splash.png" type="Texture" id=3]
 [ext_resource path="res://Shop.cs" type="Script" id=4]
@@ -66,7 +66,7 @@ shader_param/SCALE = 1.5
 shader_param/SOFTNESS = 0.65
 
 [sub_resource type="DynamicFont" id=16]
-size = 32
+size = 16
 font_data = ExtResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=17]

@@ -8,12 +8,16 @@ public class UI : CanvasLayer
 	private bool TutorialActive;
 	[Export] public NodePath PlayAreaNode;
 	private Label MoneyLabel;
+	private Label CropsLabel;
+	private Label StatsLabel;
 	private PlayArea PlayArea;
 	private Tween Tween;
 	private int OldCoinsCount;
 	private float Horizontal;
+	private bool Restart;
+    private bool Restarting;
 
-	static string GetOrdinalNumber(int number)
+    static string GetOrdinalNumber(int number)
 	{
 		if (number >= 11 && number <= 13)
 		{
@@ -39,6 +43,8 @@ public class UI : CanvasLayer
 	public override void _Ready()
 	{
 		MoneyLabel = GetNode<Label>("MoneyLabel");
+		CropsLabel = GetNode<Label>("HarvestCounter");
+		StatsLabel = GetNode<Label>("PlayerStats");
 		PlayArea = GetNode<PlayArea>(PlayAreaNode);
 		Tween = new Tween();
 		AddChild(Tween);
@@ -47,6 +53,12 @@ public class UI : CanvasLayer
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(float delta)
 	{
+		if (Restart)
+		{
+			RestartMap();
+			return;
+		}
+
 		if (TutorialActive && (Input.IsActionJustPressed("ui_cancel") || Input.IsActionJustPressed("ui_accept")))
 		{
 			CloseTutorial();
@@ -78,11 +90,16 @@ public class UI : CanvasLayer
 		}
 
 		GetNode<Label>("CalendarLabel").Text = $"{PlayArea.NumberOfDays}{GetOrdinalNumber(PlayArea.NumberOfDays)} day";
+		CropsLabel.Text = $"C:{PlayArea.Player.HarvestedCropsCount.ToString("n0")}\nW:{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
+
+		StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.dashTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
+		StatsLabel.Text += $"\n";
+		StatsLabel.Text += $"SPEED: {PlayArea.Player.speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
 	}
 
 	private void UpdateMoneyLabel(int coins)
 	{
-		MoneyLabel.Text = $"{coins}$";
+		MoneyLabel.Text = $"{coins.ToString("n0")}$";
 	}
 
 	private void CloseTutorial()
@@ -127,6 +144,15 @@ public class UI : CanvasLayer
 
 	public void _on_Restart_pressed()
 	{
+		Restart = true;
+	}
+
+	public void RestartMap()
+	{
+        if (Restarting) return;
+
+        Restarting = true;
+
 		GetTree().Paused = false;
 		var angries = GetTree()
 			.GetNodesInGroup("AngryPlants")
@@ -137,6 +163,6 @@ public class UI : CanvasLayer
 			angry.QueueFree();
 		}
 
-		GetTree().ChangeScene("SplashScreen.tscn");
+		GetNode<SceneTransition>("/root/SceneTransition").ChangeScene("Main.tscn");
 	}
 }

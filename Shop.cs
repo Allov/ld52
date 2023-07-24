@@ -16,6 +16,7 @@ public class Shop : PanelContainer
     {
         Player = GetNode<Player>(PlayerNodePath);
         PlayArea = GetNode<PlayArea>(PlayAreaNodePath);
+        RollPerks(false);
     }
 
 
@@ -64,9 +65,10 @@ public class Shop : PanelContainer
         {
             var path = "ShopContainer/Items/Item" + i;
 
-            GetNode<Label>(path + "/Name").Text = BuyablePerks[i].Name;
-            GetNode<Button>(path + "/Buy").Text = $"$ {BuyablePerks[i].Cost}";
-            GetNode<Button>(path + "/Buy").Disabled = Player.GoldCoins < BuyablePerks[i].Cost;
+            GetNode<Label>(path + "/Item/Name").Text = BuyablePerks[i].Name;
+            GetNode<Button>(path + "/Item/Buy").Text = $"$ {BuyablePerks[i].Cost}";
+            GetNode<Button>(path + "/Item/Buy").Disabled = Player.GoldCoins < BuyablePerks[i].Cost;
+            GetNode<Label>(path + "/Item/Description").Text = BuyablePerks[i].Description;
         }
 
         GetNode<Button>("ShopContainer/HBoxContainer/RerollItems").Disabled = Player.GoldCoins < 50;
@@ -232,6 +234,7 @@ public class Shop : PanelContainer
         {
             Id = "cut-weed-1",
             Name = "Cut Weed is Fertilized",
+            Description = "Cut Weed is Fertilized instantly.",
             Cost = 5000,
             Unique = true,
             Effect = (shop, perk) => {
@@ -242,6 +245,7 @@ public class Shop : PanelContainer
         {
             Id = "cut-weed-2",
             Name = "Cut Weed is Fertilized x2",
+            Description = "Cut Weed is Fertilized, and lvl.2 instantly.",
             Cost = 5000,
             Unique = true,
             CanSpawn = (shop) => shop.Player.ActivePerks.Any( perk => perk.Id == "cut-weed-1" ),
@@ -254,6 +258,7 @@ public class Shop : PanelContainer
         {
             Id = "cut-weed-3",
             Name = "Cut Weed becomes corn",
+            Description = "Cut Weed becomes corn instantly.",
             Cost = 10000,
             CanSpawn = (shop) => shop.Player.ActivePerks.Any( perk => perk.Id == "cut-weed-2" ),
             Unique = true,
@@ -266,6 +271,7 @@ public class Shop : PanelContainer
         {
             Id = "cut-weed-4",
             Name = "Cut Weed becomes gold",
+            Description = "Cut Weed becomes Gold instantly.",
             CanSpawn = (shop) => shop.Player.ActivePerks.Any( perk => perk.Id == "cut-weed-3" ),
             Cost = 20000,
             Unique = true,
