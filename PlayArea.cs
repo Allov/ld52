@@ -138,6 +138,7 @@ public class PlayArea : Node2D
         {
             GetTree().Paused = true;
             GameOverPanel.Visible = true;
+            return;
         }
 
         UpdateTileGroupCount();

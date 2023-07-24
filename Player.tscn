@@ -121,7 +121,7 @@ ActionForce = Vector2( 640, 640 )
 ScythScene = ExtResource( 2 )
 dashDuration = 0.1
 ScythCount = 1
-GoldCoins = 5000
+GoldCoins = 50
 
 [node name="Sprite3" type="Sprite" parent="."]
 modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
