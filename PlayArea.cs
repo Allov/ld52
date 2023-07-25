@@ -130,12 +130,11 @@ public class PlayArea : Node2D
     {
         if (LockMouseToWindow)
         {
-            Input.SetMouseMode(Input.MouseMode.Confined);
-            // Input.SetMouseMode(Input.MouseMode.Visible);
+            Input.MouseMode = Input.MouseModeEnum.Confined | Input.MouseModeEnum.Hidden;
         }
         else
         {
-            Input.SetMouseMode(Input.MouseMode.Hidden);
+            Input.MouseMode = Input.MouseModeEnum.Hidden;
         }
 
         if (TriggerEndOfGame)

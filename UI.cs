@@ -111,9 +111,9 @@ public class UI : CanvasLayer
 
 	private void Pause()
 	{
-        if (Input.GetMouseMode() == Input.MouseMode.Confined)
+        if (Input.MouseMode == Input.MouseModeEnum.Confined)
         {
-            Input.SetMouseMode(Input.MouseMode.Hidden);
+            Input.MouseMode = Input.MouseModeEnum.Hidden;
         }
 
 		GetTree().Paused = true;

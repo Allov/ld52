@@ -153,6 +153,10 @@ attack_right={
 2d_physics/layer_6="Drops"
 2d_physics/layer_7="Obstacles"
 
+[mono]
+
+project/assembly_name="ld52"
+
 [physics]
 
 common/enable_pause_aware_picking=true
