@@ -119,13 +119,14 @@ script = ExtResource( 3 )
 AddedGrowRadius = 16.0
 ActionForce = Vector2( 640, 640 )
 ScythScene = ExtResource( 2 )
-dashDuration = 0.1
+DashDuration = 0.2
 ScythCount = 1
 GoldCoins = 50
+AutoShoot = true
 
 [node name="Sprite3" type="Sprite" parent="."]
 modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
-scale = Vector2( 6, 6 )
+scale = Vector2( 10, 10 )
 texture = ExtResource( 7 )
 
 [node name="Sprite2" type="Sprite" parent="."]

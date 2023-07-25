@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=2]
@@ -23,6 +23,11 @@
 [ext_resource path="res://Map1.tscn" type="PackedScene" id=21]
 [ext_resource path="res://Map2.tscn" type="PackedScene" id=22]
 [ext_resource path="res://Map3.tscn" type="PackedScene" id=23]
+[ext_resource path="res://Assets/cursorA.png" type="Texture" id=24]
+[ext_resource path="res://Cursor.cs" type="Script" id=25]
+[ext_resource path="res://Assets/cursorB.png" type="Texture" id=26]
+[ext_resource path="res://Assets/cursorC.png" type="Texture" id=27]
+[ext_resource path="res://Assets/cursorD.png" type="Texture" id=28]
 
 [sub_resource type="DynamicFont" id=24]
 size = 24
@@ -168,7 +173,6 @@ AngryCornScene = ExtResource( 5 )
 AngryTomatoScene = ExtResource( 4 )
 AngryEggplantScene = ExtResource( 6 )
 GameOverNodePath = NodePath("../../../UI/GameOver")
-LockMouseToWindow = false
 CameraNodePath = NodePath("../../../Camera")
 AngriesNodePath = NodePath("..")
 Maps = [ ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 10 ) ]
@@ -670,6 +674,39 @@ visible = false
 scale = Vector2( 4, 4 )
 texture = ExtResource( 11 )
 centered = false
+
+[node name="CursorA" type="Sprite" parent="UI"]
+visible = false
+modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
+scale = Vector2( 4, 4 )
+z_index = 128
+texture = ExtResource( 24 )
+script = ExtResource( 25 )
+
+[node name="CursorB" type="Sprite" parent="UI"]
+visible = false
+modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
+scale = Vector2( 4, 4 )
+z_index = 128
+texture = ExtResource( 26 )
+offset = Vector2( 7, 7 )
+script = ExtResource( 25 )
+
+[node name="CursorC" type="Sprite" parent="UI"]
+modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
+scale = Vector2( 4, 4 )
+z_index = 128
+texture = ExtResource( 27 )
+script = ExtResource( 25 )
+
+[node name="CursorD" type="Sprite" parent="UI"]
+visible = false
+modulate = Color( 0.968627, 0.917647, 0.384314, 1 )
+scale = Vector2( 4, 4 )
+z_index = 128
+texture = ExtResource( 28 )
+offset = Vector2( 8, 8 )
+script = ExtResource( 25 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 13 )

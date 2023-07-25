@@ -92,9 +92,9 @@ public class UI : CanvasLayer
 		GetNode<Label>("CalendarLabel").Text = $"{PlayArea.NumberOfDays}{GetOrdinalNumber(PlayArea.NumberOfDays)} day";
 		CropsLabel.Text = $"C:{PlayArea.Player.HarvestedCropsCount.ToString("n0")}\nW:{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
 
-		StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.dashTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
+		StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.DashCooldownTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
 		StatsLabel.Text += $"\n";
-		StatsLabel.Text += $"SPEED: {PlayArea.Player.speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
+		StatsLabel.Text += $"SPEED: {PlayArea.Player.Speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
 	}
 
 	private void UpdateMoneyLabel(int coins)
@@ -111,6 +111,10 @@ public class UI : CanvasLayer
 
 	private void Pause()
 	{
+        if (Input.GetMouseMode() == Input.MouseMode.Confined)
+        {
+            Input.SetMouseMode(Input.MouseMode.Hidden);
+        }
 
 		GetTree().Paused = true;
 		UserPaused = true;
@@ -155,12 +159,16 @@ public class UI : CanvasLayer
 
 		GetTree().Paused = false;
 		var angries = GetTree()
-			.GetNodesInGroup("AngryPlants")
-			.Cast<BaseAngry>();
+			.GetNodesInGroup("AngryPlants");
 
 		foreach (var angry in angries)
 		{
-			angry.QueueFree();
+            var a = angry as BaseAngry;
+			a?.QueueFree();
+
+            if (a == null) {
+                GD.Print("angry is null on restart...");
+            }
 		}
 
 		GetNode<SceneTransition>("/root/SceneTransition").ChangeScene("Main.tscn");

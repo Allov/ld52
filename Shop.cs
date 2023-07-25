@@ -190,7 +190,7 @@ public class Shop : PanelContainer
             Description = "You run faster.",
             Cost = 100,
             Effect = (shop, perk) => {
-                shop.Player.speed = shop.Player.speed * 1.25f;
+                shop.Player.Speed = shop.Player.Speed * 1.25f;
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
@@ -203,7 +203,7 @@ public class Shop : PanelContainer
             Cost = 100,
             Unique = true,
             Effect = (shop, perk) => {
-                shop.Player.dashDuration = shop.Player.dashDuration + .2f;
+                shop.Player.DashDuration = shop.Player.DashDuration + .2f;
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }

@@ -55,12 +55,6 @@ public class PlayArea : Node2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        if (LockMouseToWindow)
-        {
-            Input.SetMouseMode(Input.MouseMode.Confined);
-            // Input.SetMouseMode(Input.MouseMode.Visible);
-        }
-
         var map = Maps[RandomHelpers.RangeInt(0, Maps.Length)].Instance<Node2D>();
         AddChild(map);
 
@@ -134,6 +128,16 @@ public class PlayArea : Node2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
+        if (LockMouseToWindow)
+        {
+            Input.SetMouseMode(Input.MouseMode.Confined);
+            // Input.SetMouseMode(Input.MouseMode.Visible);
+        }
+        else
+        {
+            Input.SetMouseMode(Input.MouseMode.Hidden);
+        }
+
         if (TriggerEndOfGame)
         {
             GetTree().Paused = true;

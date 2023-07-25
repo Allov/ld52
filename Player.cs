@@ -11,22 +11,18 @@ public class Player : KinematicBody2D
     [Export] public float ShootTime = .3f;
     public Cooldown ShootCooldown;
 
-    [Export]
-    public float speed = 200; // Speed at which the ninja moves
+    [Export] public float Speed = 200; // Speed at which the ninja moves
 
-    [Export]
-    public float friction = 6; // Friction applied when the ninja stops moving
+    [Export] public float Friction = 6; // Friction applied when the ninja stops moving
 
     private Vector2 Velocity; // Current velocity of the ninja
 
-    [Export]
-    public float dashSpeed = 400; // Speed at which the ninja dashes
+    [Export] public float DashingSpeed = 400; // Speed at which the ninja dashes
+
+    [Export] public float DashDuration = 0.3f; // Duration of the dash in seconds
 
     [Export]
-    public float dashDuration = 0.3f; // Duration of the dash in seconds
-
-    [Export]
-    public float dashTime = 0.5f; // Time in seconds between dashes
+    public float DashCooldownTime = 0.5f; // Time in seconds between dashes
     public Cooldown DashCooldown;
     private Particles2D DashParticle;
     private CollisionShape2D AreaCollisionShape;
@@ -47,12 +43,13 @@ public class Player : KinematicBody2D
 
     [Export] public float AddedGrowRadius { get; set; }
     public float Size { get; private set; }
+    [Export] public bool AutoShoot = false;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         ShootCooldown = new Cooldown(ShootTime, this);
-        DashCooldown = new Cooldown(dashTime, this);
+        DashCooldown = new Cooldown(DashCooldownTime, this);
         DashParticle = GetNode<Particles2D>("Dash");
         AreaCollisionShape = GetNode<CollisionShape2D>("Area2D/CollisionShape2D");
         Size = ((CircleShape2D)AreaCollisionShape.Shape).Radius;
@@ -80,7 +77,7 @@ public class Player : KinematicBody2D
             direction = new Vector2(horizontalAttack, verticalAttack).Normalized();
         }
 
-        if ((Input.IsActionPressed("attack") || attackingController) && ShootCooldown.Use())
+        if ((AutoShoot || Input.IsActionPressed("attack") || attackingController) && ShootCooldown.Use())
         {
             for (var i = 0; i < ScythCount; i++)
             {
@@ -111,9 +108,9 @@ public class Player : KinematicBody2D
         GetNode<Sprite>("Sprite3").LookAt(GlobalPosition + direction);
 
         // Calculate the new velocity based on the input
-        if (Input.IsActionJustPressed("dash") && moving && DashCooldown.Use())
+        if (Input.IsActionPressed("dash") && moving && DashCooldown.Use())
         {
-            dashTimer = dashDuration;
+            dashTimer = DashDuration;
             DashParticle.OneShot = true;
             DashParticle.Emitting = true;
             DashParticle.Restart();
@@ -127,7 +124,7 @@ public class Player : KinematicBody2D
 
         GetNode<Sprite>("Sprite").FlipH = Velocity.x < 0;
 
-        var adjustedSpeed = speed;
+        var adjustedSpeed = Speed;
 
         // Update the dash timer
         if (dashTimer > 0)
@@ -135,8 +132,8 @@ public class Player : KinematicBody2D
             GetNode<AnimationPlayer>("AnimationPlayer").Stop();
 
             dashTimer -= delta;
-            adjustedSpeed = speed + dashSpeed;
-            var angle = 2f * Mathf.Pi / dashDuration * delta;
+            adjustedSpeed = Speed + DashingSpeed;
+            var angle = 2f * Mathf.Pi / DashDuration * delta;
             GetNode<Sprite>("Sprite").Rotate(Velocity.Normalized().x > 0 ? angle : -angle);
         }
 
@@ -161,8 +158,10 @@ public class Player : KinematicBody2D
             GetNode<Sprite>("Sprite").Position = Vector2.Zero;
         }
 
-        Velocity.x = Mathf.Lerp(Velocity.x, horizontalInput * adjustedSpeed, delta * friction);
-        Velocity.y = Mathf.Lerp(Velocity.y, verticalInput * adjustedSpeed, delta * friction);
+        var hv = new Vector2(horizontalInput, verticalInput).Normalized();
+
+        Velocity.x = Mathf.Lerp(Velocity.x, hv.x * adjustedSpeed, delta * Friction);
+        Velocity.y = Mathf.Lerp(Velocity.y, hv.y * adjustedSpeed, delta * Friction);
 
         // Move the ninja using the new velocity
         Velocity = MoveAndSlide(Velocity);
