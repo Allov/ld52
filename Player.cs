@@ -277,7 +277,7 @@ public class Player : KinematicBody2D
     {
         if (node is RigidBody2D body)
         {
-            body.ApplyCentralImpulse((body.GlobalPosition - body.GlobalPosition).Normalized());
+            body.ApplyCentralImpulse((body.GlobalPosition - body.GlobalPosition).Normalized() * 20f);
         }
     }
 

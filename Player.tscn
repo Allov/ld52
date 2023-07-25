@@ -108,10 +108,10 @@ tracks/1/keys = {
 radius = 16.0
 
 [sub_resource type="CircleShape2D" id=11]
-radius = 17.8885
+radius = 48.6621
 
 [sub_resource type="CircleShape2D" id=12]
-radius = 128.25
+radius = 128.0
 
 [node name="Player" type="KinematicBody2D"]
 collision_mask = 0
@@ -179,7 +179,8 @@ collision_mask = 32
 space_override = 1
 gravity_point = true
 gravity_vec = Vector2( 0, 0 )
-gravity = 900.0
+gravity = 1800.0
+linear_damp = 0.5
 angular_damp = 0.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttrackArea"]
