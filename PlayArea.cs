@@ -51,7 +51,6 @@ public class PlayArea : Node2D
     public YSort Angries;
     [Export] public PackedScene[] Maps;
 
-
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -243,38 +242,70 @@ public class PlayArea : Node2D
         }
     }
 
-    private void SpawnAngryPlant()
-    {
-        var angryPlant = AngryPlantScene.Instance<BaseAngry>();
-        angryPlant.GlobalPosition = GetRandomPositionOnPlayArea();
-        Angries.AddChild(angryPlant);
-    }
-
     private static Vector2 GetRandomPositionOnPlayArea()
     {
         return new Vector2(RandomHelpers.RangeInt(400, 1200), RandomHelpers.RangeInt(200, 600));
     }
 
+    private void SpawnAngryAtRandomPosition(BaseAngry angry)
+    {
+        SpawnAngryAt(angry, GetRandomPositionOnPlayArea());
+    }
+    private void SpawnAngryAt(BaseAngry angry, Vector2 position)
+    {
+        angry.GlobalPosition = position;
+        Angries.AddChild(angry);
+    }
+
+
+    private void SpawnAngryPlant()
+    {
+        var angryPlant = AngryPlantScene.Instance<BaseAngry>();
+        SpawnAngryAtRandomPosition(angryPlant);
+    }
+
     private void SpawnAngryTomato()
     {
         var angryTomato = AngryTomatoScene.Instance<BaseAngry>();
-        angryTomato.GlobalPosition = GetRandomPositionOnPlayArea();
-        Angries.AddChild(angryTomato);
+        SpawnAngryAtRandomPosition(angryTomato);
     }
 
     private void SpawnAngryEggplant()
     {
         var angryEggplant = AngryEggplantScene.Instance<BaseAngry>();
-        angryEggplant.GlobalPosition = GetRandomPositionOnPlayArea();
-        Angries.AddChild(angryEggplant);
+        SpawnAngryAtRandomPosition(angryEggplant);
     }
 
     private void SpawnAngryCorn()
     {
         var angryCorn = AngryCornScene.Instance<BaseAngry>();
-        angryCorn.GlobalPosition = GetRandomPositionOnPlayArea();
-        Angries.AddChild(angryCorn);
+        SpawnAngryAtRandomPosition(angryCorn);
     }
+
+    private void SpawnAngryPlantAt(Vector2 position)
+    {
+        var angryPlant = AngryPlantScene.Instance<BaseAngry>();
+        SpawnAngryAt(angryPlant, position);
+    }
+
+    private void SpawnAngryTomatoAt(Vector2 position)
+    {
+        var angryTomato = AngryTomatoScene.Instance<BaseAngry>();
+        SpawnAngryAt(angryTomato, position);
+    }
+
+    private void SpawnAngryEggplantAt(Vector2 position)
+    {
+        var angryEggplant = AngryEggplantScene.Instance<BaseAngry>();
+        SpawnAngryAt(angryEggplant, position);
+    }
+
+    private void SpawnAngryCornAt(Vector2 position)
+    {
+        var angryCorn = AngryCornScene.Instance<BaseAngry>();
+        SpawnAngryAt(angryCorn, position);
+    }
+
 
     private void SpawnWeeds()
     {
@@ -331,7 +362,6 @@ public class PlayArea : Node2D
     private void GrowWeeds()
     {
         var neighbors = new int[4];
-        var spawnedAngriesCount = 0;
         foreach (var tile in WeedTiles)
         {
             tile.Grow();
@@ -352,15 +382,15 @@ public class PlayArea : Node2D
 
             if (tile.Stage >= 4 && RandomHelpers.DrawResult(2))
             {
-                SpawnAngryPlant();
+                SpawnAngryPlantAt(tile.GlobalPosition);
             }
             else if (tile.Stage >= 6 && RandomHelpers.DrawResult(5))
             {
-                SpawnAngryCorn();
+                SpawnAngryCornAt(tile.GlobalPosition);
             }
             else if (tile.Stage >= 8)
             {
-                SpawnAngryEggplant();
+                SpawnAngryEggplantAt(tile.GlobalPosition);
                 tile.ChangeGroup("Dirt");
             }
 
