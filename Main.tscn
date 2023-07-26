@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=2]
@@ -38,14 +38,6 @@ use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 7 )
 
-[sub_resource type="ShaderMaterial" id=14]
-shader = ExtResource( 17 )
-shader_param/player_position = Vector2( 0.5, 0.5 )
-shader_param/color = Color( 0.0901961, 0.0901961, 0.0980392, 1 )
-shader_param/MULTIPLIER = 0.56
-shader_param/SCALE = 1.2
-shader_param/SOFTNESS = 0.65
-
 [sub_resource type="DynamicFontData" id=17]
 font_path = "res://SyneMono-Regular.ttf"
 
@@ -54,6 +46,14 @@ size = 48
 use_mipmaps = true
 use_filter = true
 font_data = SubResource( 17 )
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = ExtResource( 17 )
+shader_param/player_position = Vector2( 0.5, 0.5 )
+shader_param/color = Color( 0.0901961, 0.0901961, 0.0980392, 1 )
+shader_param/MULTIPLIER = 0.56
+shader_param/SCALE = 1.2
+shader_param/SOFTNESS = 0.65
 
 [sub_resource type="StyleBoxFlat" id=22]
 content_margin_left = 15.0
@@ -86,6 +86,8 @@ use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 7 )
 
+[sub_resource type="StyleBoxFlat" id=25]
+
 [sub_resource type="Animation" id=11]
 length = 0.15
 step = 0.05
@@ -96,10 +98,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.15 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="Animation" id=15]
@@ -123,7 +125,7 @@ tracks/0/keys = {
 resource_name = "paused"
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("VBoxContainer/Label:modulate")
+tracks/0/path = NodePath("VBoxContainer/PausedIndicator:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -175,6 +177,7 @@ AngryCornScene = ExtResource( 5 )
 AngryTomatoScene = ExtResource( 4 )
 AngryEggplantScene = ExtResource( 6 )
 GameOverNodePath = NodePath("../../../UI/GameOver")
+LockMouseToWindow = false
 CameraNodePath = NodePath("../../../Camera")
 AngriesNodePath = NodePath("..")
 Maps = [ ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ), ExtResource( 10 ) ]
@@ -203,9 +206,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 texture = ExtResource( 12 )
 expand = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HarvestCounter" type="Label" parent="UI"]
 anchor_left = 0.5
@@ -241,6 +241,49 @@ custom_fonts/font = SubResource( 24 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="MoneyLabel" type="Label" parent="UI"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -200.0
+margin_top = 8.0
+margin_right = -50.0
+margin_bottom = 78.0
+grow_horizontal = 0
+custom_colors/font_color = Color( 0.905882, 0.92549, 0.254902, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+custom_fonts/font = SubResource( 16 )
+text = "$ 300"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CalendarLabel" type="Label" parent="UI"]
+margin_left = 56.0
+margin_top = 24.0
+margin_right = 548.0
+margin_bottom = 71.0
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 3
+custom_constants/shadow_offset_y = 3
+text = "1/60 days"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+material = SubResource( 14 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 8.0
+margin_bottom = 8.0
+mouse_filter = 2
 
 [node name="GameOver" type="PanelContainer" parent="UI"]
 visible = false
@@ -280,49 +323,6 @@ margin_top = 122.0
 margin_right = 442.0
 margin_bottom = 169.0
 text = "Restart"
-
-[node name="ColorRect" type="ColorRect" parent="UI"]
-material = SubResource( 14 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 8.0
-margin_bottom = 8.0
-mouse_filter = 2
-
-[node name="MoneyLabel" type="Label" parent="UI"]
-anchor_left = 1.0
-anchor_right = 1.0
-margin_left = -200.0
-margin_top = 8.0
-margin_right = -50.0
-margin_bottom = 78.0
-grow_horizontal = 0
-custom_colors/font_color = Color( 0.905882, 0.92549, 0.254902, 1 )
-custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_constants/shadow_offset_x = 3
-custom_constants/shadow_offset_y = 3
-custom_fonts/font = SubResource( 16 )
-text = "$ 300"
-align = 1
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="CalendarLabel" type="Label" parent="UI"]
-margin_left = 56.0
-margin_top = 24.0
-margin_right = 548.0
-margin_bottom = 71.0
-custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_constants/shadow_offset_x = 3
-custom_constants/shadow_offset_y = 3
-text = "1/60 days"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Shop" type="PanelContainer" parent="UI"]
 visible = false
@@ -597,209 +597,233 @@ margin_bottom = 47.0
 rect_min_size = Vector2( 350, 0 )
 text = "Continue"
 
-[node name="Paused" type="PanelContainer" parent="UI"]
+[node name="Settings" type="PanelContainer" parent="UI"]
 visible = false
-modulate = Color( 1, 1, 1, 0 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -183.0
-margin_top = -192.0
-margin_right = 183.0
-margin_bottom = 192.0
-grow_horizontal = 2
-grow_vertical = 2
-rect_min_size = Vector2( 200, 0 )
-custom_styles/panel = ExtResource( 8 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Paused"]
-margin_left = 3.0
-margin_top = 3.0
-margin_right = 363.0
-margin_bottom = 381.0
-
-[node name="Label2" type="Label" parent="UI/Paused/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0.792949 )
-margin_right = 360.0
-margin_bottom = 81.0
-text = "The Gleaning Samurai
-"
-align = 1
-
-[node name="Label" type="Label" parent="UI/Paused/VBoxContainer"]
-modulate = Color( 1, 1, 1, 0.4 )
-margin_top = 85.0
-margin_right = 360.0
-margin_bottom = 166.0
-text = "- Pause -
-"
-align = 1
-
-[node name="HowToPlay" type="Button" parent="UI/Paused/VBoxContainer"]
-margin_top = 170.0
-margin_right = 360.0
-margin_bottom = 217.0
-text = "How to Play"
-
-[node name="Resume" type="Button" parent="UI/Paused/VBoxContainer"]
-margin_top = 221.0
-margin_right = 360.0
-margin_bottom = 268.0
-text = "Resume"
-
-[node name="Restart" type="Button" parent="UI/Paused/VBoxContainer"]
-margin_top = 272.0
-margin_right = 360.0
-margin_bottom = 319.0
-text = "Restart"
-
-[node name="Quit" type="Button" parent="UI/Paused/VBoxContainer"]
-margin_top = 323.0
-margin_right = 360.0
-margin_bottom = 370.0
-text = "Quit"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/Paused"]
-anims/RESET = SubResource( 11 )
-anims/fadein = SubResource( 15 )
-anims/paused = SubResource( 12 )
-
-[node name="Settings" type="PanelContainer" parent="UI"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 256.0
-margin_top = 192.0
-margin_right = -256.0
-margin_bottom = -192.0
+margin_left = -600.0
+margin_top = -345.0
+margin_right = 600.0
+margin_bottom = 345.0
 
 [node name="2Cols" type="HBoxContainer" parent="UI/Settings"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 473.0
+margin_right = 1193.0
+margin_bottom = 683.0
 alignment = 1
 
 [node name="Col1" type="VBoxContainer" parent="UI/Settings/2Cols"]
-margin_right = 503.0
-margin_bottom = 466.0
+margin_right = 591.0
+margin_bottom = 676.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
 [node name="Audio" type="PanelContainer" parent="UI/Settings/2Cols/Col1"]
-margin_right = 503.0
-margin_bottom = 231.0
+margin_right = 591.0
+margin_bottom = 336.0
 size_flags_vertical = 3
 
 [node name="Panel" type="Panel" parent="UI/Settings/2Cols/Col1/Audio"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 496.0
-margin_bottom = 224.0
+margin_right = 584.0
+margin_bottom = 329.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/2Cols/Col1/Audio"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 496.0
-margin_bottom = 224.0
+margin_right = 584.0
+margin_bottom = 329.0
 size_flags_horizontal = 3
 
 [node name="Title" type="Label" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer"]
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 39.0
 size_flags_horizontal = 3
 text = "Audio"
 
-[node name="Volume" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer"]
+[node name="MasterVolume" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer"]
 margin_top = 43.0
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 82.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/Volume"]
+[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/MasterVolume"]
 margin_right = 162.0
 margin_bottom = 39.0
-text = "Volume:  "
+text = "Master:  "
 
-[node name="VolumeSlider" type="HSlider" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/Volume"]
+[node name="MasterVolumeSlider" type="HSlider" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/MasterVolume"]
 margin_left = 166.0
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 39.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme = ExtResource( 30 )
+max_value = 1.0
+step = 0.1
+tick_count = 10
+ticks_on_borders = true
+
+[node name="SFXVolume" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer"]
+margin_top = 86.0
+margin_right = 577.0
+margin_bottom = 125.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/SFXVolume"]
+margin_right = 162.0
+margin_bottom = 39.0
+text = "SFX:     "
+
+[node name="SFXVolumeSlider" type="HSlider" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/SFXVolume"]
+margin_left = 166.0
+margin_right = 577.0
+margin_bottom = 39.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 30 )
+max_value = 1.0
+step = 0.1
+tick_count = 10
+ticks_on_borders = true
+
+[node name="MusicVolume" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer"]
+margin_top = 129.0
+margin_right = 577.0
+margin_bottom = 168.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/MusicVolume"]
+margin_right = 162.0
+margin_bottom = 39.0
+text = "Music:   "
+
+[node name="MusicVolumeSlider" type="HSlider" parent="UI/Settings/2Cols/Col1/Audio/VBoxContainer/MusicVolume"]
+margin_left = 166.0
+margin_right = 577.0
+margin_bottom = 39.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource( 30 )
+max_value = 1.0
+step = 0.1
 tick_count = 10
 ticks_on_borders = true
 
 [node name="Options" type="PanelContainer" parent="UI/Settings/2Cols/Col1"]
-margin_top = 235.0
-margin_right = 503.0
-margin_bottom = 466.0
+margin_top = 340.0
+margin_right = 591.0
+margin_bottom = 676.0
 size_flags_vertical = 3
 
 [node name="Panel" type="Panel" parent="UI/Settings/2Cols/Col1/Options"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 496.0
-margin_bottom = 224.0
+margin_right = 584.0
+margin_bottom = 329.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/2Cols/Col1/Options"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 496.0
-margin_bottom = 224.0
+margin_right = 584.0
+margin_bottom = 329.0
 
 [node name="Title" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 39.0
 size_flags_horizontal = 3
 text = "Options"
 
-[node name="CursorColor" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
+[node name="AutoShoot" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
 margin_top = 43.0
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 90.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/CursorColor"]
+[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/AutoShoot"]
 margin_top = 4.0
-margin_right = 162.0
+margin_right = 252.0
 margin_bottom = 43.0
-text = "Color:   "
+text = "Auto Throw:   "
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/CursorColor"]
-margin_left = 166.0
-margin_right = 489.0
+[node name="AutoShoot" type="CheckButton" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/AutoShoot"]
+margin_left = 505.0
+margin_right = 577.0
 margin_bottom = 47.0
-size_flags_horizontal = 3
-toggle_mode = false
-expand_icon = true
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 10
 
-[node name="Cursor" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
+[node name="LockCursor" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
 margin_top = 94.0
-margin_right = 489.0
+margin_right = 577.0
 margin_bottom = 141.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor"]
+[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor"]
 margin_top = 4.0
-margin_right = 162.0
+margin_right = 216.0
 margin_bottom = 43.0
-text = "Cursor:  "
+text = "Lock Cursor:"
 
-[node name="Cursors" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor"]
-margin_left = 166.0
-margin_right = 489.0
+[node name="LockCursor" type="CheckButton" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor"]
+margin_left = 505.0
+margin_right = 577.0
+margin_bottom = 47.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 10
+
+[node name="Col2" type="VBoxContainer" parent="UI/Settings/2Cols"]
+margin_left = 595.0
+margin_right = 1186.0
+margin_bottom = 676.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Cursor" type="PanelContainer" parent="UI/Settings/2Cols/Col2"]
+margin_right = 591.0
+margin_bottom = 676.0
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="UI/Settings/2Cols/Col2/Cursor"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 584.0
+margin_bottom = 669.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Settings/2Cols/Col2/Cursor"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 584.0
+margin_bottom = 669.0
+size_flags_horizontal = 3
+custom_constants/separation = 0
+
+[node name="Title" type="Label" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer"]
+margin_right = 577.0
+margin_bottom = 39.0
+size_flags_horizontal = 3
+text = "Cursor Style"
+
+[node name="Cursor" type="HBoxContainer" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer"]
+margin_top = 39.0
+margin_right = 577.0
+margin_bottom = 86.0
+size_flags_horizontal = 3
+
+[node name="Cursors" type="HBoxContainer" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor"]
+margin_right = 577.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 
-[node name="CursorA" type="Button" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors"]
-margin_right = 77.0
+[node name="CursorA" type="Button" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors"]
+margin_right = 141.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 toggle_mode = true
@@ -808,9 +832,9 @@ icon = ExtResource( 24 )
 icon_align = 1
 expand_icon = true
 
-[node name="CursorB" type="Button" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors"]
-margin_left = 81.0
-margin_right = 159.0
+[node name="CursorB" type="Button" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors"]
+margin_left = 145.0
+margin_right = 286.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 toggle_mode = true
@@ -819,9 +843,9 @@ icon = ExtResource( 26 )
 icon_align = 1
 expand_icon = true
 
-[node name="CursorC" type="Button" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors"]
-margin_left = 163.0
-margin_right = 241.0
+[node name="CursorC" type="Button" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors"]
+margin_left = 290.0
+margin_right = 431.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 toggle_mode = true
@@ -830,9 +854,9 @@ icon = ExtResource( 27 )
 icon_align = 1
 expand_icon = true
 
-[node name="CursorD" type="Button" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors"]
-margin_left = 245.0
-margin_right = 323.0
+[node name="CursorD" type="Button" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors"]
+margin_left = 435.0
+margin_right = 577.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 toggle_mode = true
@@ -841,36 +865,121 @@ icon = ExtResource( 28 )
 icon_align = 1
 expand_icon = true
 
-[node name="LockCursor" type="HBoxContainer" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer"]
-margin_top = 145.0
-margin_right = 489.0
-margin_bottom = 192.0
+[node name="Color" type="HBoxContainer" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer"]
+margin_top = 86.0
+margin_right = 577.0
+margin_bottom = 654.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor"]
+[node name="ColorPicker" type="ColorPicker" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Color"]
+margin_left = 4.0
 margin_top = 4.0
-margin_right = 162.0
-margin_bottom = 43.0
-text = "Lock Cur:"
-
-[node name="LockCursor" type="CheckButton" parent="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor"]
-margin_left = 166.0
-margin_right = 489.0
-margin_bottom = 47.0
+margin_right = 581.0
+margin_bottom = 572.0
 size_flags_horizontal = 3
+presets_enabled = false
+presets_visible = false
 
-[node name="Col2" type="VBoxContainer" parent="UI/Settings/2Cols"]
-margin_left = 507.0
-margin_right = 1010.0
-margin_bottom = 466.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="Tutorial" type="Sprite" parent="UI"]
+[node name="Paused" type="PanelContainer" parent="UI"]
 visible = false
-scale = Vector2( 4, 4 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -192.0
+margin_top = -237.0
+margin_right = 192.0
+margin_bottom = 238.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_min_size = Vector2( 200, 0 )
+custom_styles/panel = ExtResource( 8 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Paused"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 381.0
+margin_bottom = 472.0
+
+[node name="GameTitle" type="Label" parent="UI/Paused/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0.792949 )
+margin_right = 378.0
+margin_bottom = 81.0
+text = "The Gleaning Samurai
+"
+align = 1
+
+[node name="PausedIndicator" type="Label" parent="UI/Paused/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0.4 )
+margin_top = 85.0
+margin_right = 378.0
+margin_bottom = 166.0
+text = "- Pause -
+"
+align = 1
+
+[node name="Resume" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 170.0
+margin_right = 378.0
+margin_bottom = 217.0
+grow_vertical = 2
+custom_colors/font_color = Color( 0.482353, 0.992157, 0.298039, 1 )
+text = "Resume"
+
+[node name="HSeparator" type="HSeparator" parent="UI/Paused/VBoxContainer"]
+margin_top = 221.0
+margin_right = 378.0
+margin_bottom = 241.0
+custom_constants/separation = 20
+custom_styles/separator = SubResource( 25 )
+
+[node name="Restart" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 245.0
+margin_right = 378.0
+margin_bottom = 292.0
+grow_vertical = 2
+custom_colors/font_color = Color( 0.894118, 0.498039, 0.498039, 1 )
+text = "Restart"
+
+[node name="Settings" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 296.0
+margin_right = 378.0
+margin_bottom = 343.0
+grow_vertical = 2
+text = "Settings"
+
+[node name="HowToPlay" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 347.0
+margin_right = 378.0
+margin_bottom = 394.0
+grow_vertical = 2
+text = "How to Play"
+
+[node name="HSeparator2" type="HSeparator" parent="UI/Paused/VBoxContainer"]
+margin_top = 398.0
+margin_right = 378.0
+margin_bottom = 418.0
+custom_constants/separation = 20
+custom_styles/separator = SubResource( 25 )
+
+[node name="Quit" type="Button" parent="UI/Paused/VBoxContainer"]
+margin_top = 422.0
+margin_right = 378.0
+margin_bottom = 469.0
+grow_vertical = 2
+text = "Quit"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="UI/Paused"]
+anims/RESET = SubResource( 11 )
+anims/fadein = SubResource( 15 )
+anims/paused = SubResource( 12 )
+
+[node name="Tutorial" type="TextureRect" parent="UI"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
 texture = ExtResource( 11 )
-centered = false
+expand = true
 
 [node name="CursorA" type="Sprite" parent="UI"]
 visible = false
@@ -915,13 +1024,14 @@ environment = SubResource( 13 )
 [connection signal="pressed" from="UI/Shop/ShopContainer/Items/Item2/Item/Buy" to="UI/Shop" method="_on_Buy_Item3_pressed"]
 [connection signal="pressed" from="UI/Shop/ShopContainer/HBoxContainer/RerollItems" to="UI/Shop" method="_on_RerollItems_pressed"]
 [connection signal="pressed" from="UI/Shop/ShopContainer/HBoxContainer/Continue" to="UI/Shop" method="_on_Continue_pressed"]
-[connection signal="pressed" from="UI/Paused/VBoxContainer/HowToPlay" to="UI" method="_on_HowToPlay_pressed"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/AutoShoot/AutoShoot" to="UI" method="_on_LockCursor_toggled"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor/LockCursor" to="UI" method="_on_LockCursor_toggled"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors/CursorA" to="UI" method="_on_CursorA_toggled"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors/CursorB" to="UI" method="_on_CursorB_toggled"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors/CursorC" to="UI" method="_on_CursorC_toggled"]
+[connection signal="toggled" from="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Cursor/Cursors/CursorD" to="UI" method="_on_CursorD_toggled"]
 [connection signal="pressed" from="UI/Paused/VBoxContainer/Resume" to="UI" method="_on_Resume_pressed"]
 [connection signal="pressed" from="UI/Paused/VBoxContainer/Restart" to="UI" method="_on_Restart_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/Settings" to="UI" method="_on_Settings_pressed"]
+[connection signal="pressed" from="UI/Paused/VBoxContainer/HowToPlay" to="UI" method="_on_HowToPlay_pressed"]
 [connection signal="pressed" from="UI/Paused/VBoxContainer/Quit" to="UI" method="_on_Quit_pressed"]
-[connection signal="color_changed" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/CursorColor/ColorPickerButton" to="UI" method="_on_ColorPickerButton_color_changed"]
-[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors/CursorA" to="UI" method="_on_CursorA_toggled"]
-[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors/CursorB" to="UI" method="_on_CursorB_toggled"]
-[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors/CursorC" to="UI" method="_on_CursorC_toggled"]
-[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors/CursorD" to="UI" method="_on_CursorD_toggled"]
-[connection signal="toggled" from="UI/Settings/2Cols/Col1/Options/VBoxContainer/LockCursor/LockCursor" to="UI" method="_on_LockCursor_toggled"]

@@ -17,6 +17,7 @@ public class UI : CanvasLayer
     private bool Restart;
     private bool Restarting;
     private Sprite CurrentCursor;
+    private bool SettingsActive;
 
     static string GetOrdinalNumber(int number)
     {
@@ -66,6 +67,10 @@ public class UI : CanvasLayer
         {
             CloseTutorial();
         }
+        else if (SettingsActive && (Input.IsActionJustPressed("ui_cancel")))
+        {
+            CloseSettings();
+        }
         else if (Input.IsActionJustPressed("ui_pause") && !GetTree().Paused)
         {
             Pause();
@@ -108,7 +113,14 @@ public class UI : CanvasLayer
     private void CloseTutorial()
     {
         TutorialActive = false;
-        GetNode<Sprite>("Tutorial").Visible = false;
+        GetNode<TextureRect>("Tutorial").Visible = false;
+        GetNode<PanelContainer>("Paused").Visible = true;
+    }
+
+    private void CloseSettings()
+    {
+        SettingsActive = false;
+        GetNode<PanelContainer>("Settings").Visible = false;
         GetNode<PanelContainer>("Paused").Visible = true;
     }
 
@@ -136,8 +148,22 @@ public class UI : CanvasLayer
     public void _on_HowToPlay_pressed()
     {
         GetNode<PanelContainer>("Paused").Visible = false;
-        GetNode<Sprite>("Tutorial").Visible = true;
+        GetNode<TextureRect>("Tutorial").Visible = true;
         TutorialActive = true;
+    }
+
+    public void _on_Settings_pressed()
+    {
+        var masterIndex = AudioServer.GetBusIndex("Master");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MasterVolume/MasterVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(masterIndex));
+        var musicIndex = AudioServer.GetBusIndex("Music");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MusicVolume/MusicVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(musicIndex));
+        var sfxIndex = AudioServer.GetBusIndex("SFX");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/SFXVolume/SFXVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(sfxIndex));
+
+        GetNode<PanelContainer>("Paused").Visible = false;
+        GetNode<PanelContainer>("Settings").Visible = true;
+        SettingsActive = true;
     }
 
     public void _on_Quit_pressed()
@@ -159,22 +185,7 @@ public class UI : CanvasLayer
         if (Restarting) return;
 
         Restarting = true;
-
         GetTree().Paused = false;
-        var angries = GetTree()
-            .GetNodesInGroup("AngryPlants");
-
-        foreach (var angry in angries)
-        {
-            var a = angry as BaseAngry;
-            a?.QueueFree();
-
-            if (a == null)
-            {
-                GD.Print("angry is null on restart...");
-            }
-        }
-
         GetNode<SceneTransition>("/root/SceneTransition").ChangeScene("Main.tscn");
     }
 

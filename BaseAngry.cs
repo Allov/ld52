@@ -62,7 +62,7 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
             {
                 var drop = Drops[i].Instance<BaseDrop>();
                 drop.GlobalPosition = GlobalPosition;
-                GetTree().Root.AddChild(drop);
+                GetParent().AddChild(drop);
             }
         }
     }

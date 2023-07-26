@@ -58,6 +58,11 @@ public class Player : KinematicBody2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
+        if (Input.IsActionJustPressed("toggle_auto_shoot"))
+        {
+            AutoShoot = !AutoShoot;
+        }
+
         // Get input from the player
         var horizontalInput = Input.GetActionStrength("ui_right") - Input.GetActionStrength("ui_left");
         var verticalInput = Input.GetActionStrength("ui_down") - Input.GetActionStrength("ui_up");
@@ -94,7 +99,7 @@ public class Player : KinematicBody2D
                 {
                     scyth.PiercingLeft = 10;
                 }
-                GetTree().Root.AddChild(scyth);
+                GetParent().AddChild(scyth);
 
                 scyth.ApplyCentralImpulse(direction * ActionForce);
 
