@@ -281,26 +281,17 @@ public class Shop : PanelContainer
         },
         new Perk
         {
-            Id = "piercing-1",
-            Name = "Piercing Shuriken",
-            Description = "Your Shurikens pierce up to 2 angries.",
-            Cost = 3500,
+            Id = "piercing",
+            Name = "Piercing Shuriken +2",
+            Description = "Your Shurikens pierce through 2 more angries.",
+            Cost = 100,
             Unique = true,
             Effect = (shop, perk) => {
-				// noop
+                shop.Player.PierceCount += 2;
+                perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
+                perk.Tier++;
 			}
-        },
-        new Perk
-        {
-            Id = "piercing-2",
-            Name = "Piercing Shuriken lvl.2",
-            Description = "Your Shurikens pierce up to 10 angries.",
-            Cost = 10000,
-            Unique = true,
-            Effect = (shop, perk) => {
-				// noop
-			}
-        },
+        }
     };
     private Perk[] BuyablePerks;
 }

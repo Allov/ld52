@@ -11,6 +11,7 @@ public class UI : CanvasLayer
     private Label CropsLabel;
     private Label StatsLabel;
     private PlayArea PlayArea;
+    private Shop Shop;
     private Tween Tween;
     private int OldCoinsCount;
     private float Horizontal;
@@ -18,6 +19,7 @@ public class UI : CanvasLayer
     private bool Restarting;
     private Sprite CurrentCursor;
     private bool SettingsActive;
+    private int DEBUG_AddedGoldValue = 100;
 
     static string GetOrdinalNumber(int number)
     {
@@ -48,6 +50,7 @@ public class UI : CanvasLayer
         CropsLabel = GetNode<Label>("HarvestCounter");
         StatsLabel = GetNode<Label>("PlayerStats");
         PlayArea = GetNode<PlayArea>(PlayAreaNode);
+        Shop = GetNode<Shop>("Shop");
         Tween = new Tween();
         AddChild(Tween);
 
@@ -78,6 +81,17 @@ public class UI : CanvasLayer
         else if (Input.IsActionJustPressed("ui_pause") && UserPaused)
         {
             Resume();
+        }
+
+        if (Input.IsActionJustPressed("DEBUG_open_shop"))
+        {
+            Shop.OpenShop();
+        }
+
+        if (Input.IsActionJustPressed("DEBUG_give_gold"))
+        {
+            PlayArea.Player.GoldCoins += DEBUG_AddedGoldValue;
+             DEBUG_AddedGoldValue += DEBUG_AddedGoldValue * 10;
         }
 
         UpdateUI(delta);
@@ -205,7 +219,6 @@ public class UI : CanvasLayer
 
     private void SetCursor(bool pressed, string name)
     {
-        GD.Print(pressed, " ", name);
         if (pressed)
         {
             if (CurrentCursor != null)

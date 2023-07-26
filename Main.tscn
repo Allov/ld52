@@ -101,7 +101,7 @@ tracks/0/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ) ]
+"values": [ Color( 1, 1, 1, 0 ) ]
 }
 
 [sub_resource type="Animation" id=15]
@@ -872,10 +872,10 @@ margin_bottom = 654.0
 size_flags_horizontal = 3
 
 [node name="ColorPicker" type="ColorPicker" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Color"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 581.0
-margin_bottom = 572.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 585.0
+margin_bottom = 576.0
 size_flags_horizontal = 3
 presets_enabled = false
 presets_visible = false
@@ -946,6 +946,7 @@ margin_top = 296.0
 margin_right = 378.0
 margin_bottom = 343.0
 grow_vertical = 2
+disabled = true
 text = "Settings"
 
 [node name="HowToPlay" type="Button" parent="UI/Paused/VBoxContainer"]

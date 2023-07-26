@@ -81,10 +81,9 @@ public class Scyth : RigidBody2D
 			{
 				OnAngryKilled?.Invoke(angry);
                 angry.Kill();
-				// body.QueueFree();
 			}
 
-            if (PiercingLeft <= 0)
+            if (PiercingLeft < 0)
             {
                 Dead = true;
             }

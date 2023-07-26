@@ -43,6 +43,8 @@ public class Player : KinematicBody2D
 
     [Export] public float AddedGrowRadius { get; set; }
     public float Size { get; private set; }
+    [Export] public int PierceCount { get; set; }
+
     [Export] public bool AutoShoot = false;
 
     // Called when the node enters the scene tree for the first time.
@@ -91,22 +93,15 @@ public class Player : KinematicBody2D
                 scyth.LifeTime = ShurikenLifeTime;
                 scyth.Size = ShurikenSize*4;
                 scyth.GlobalPosition = GlobalPosition + direction.Rotated(Mathf.Pi / 2f) * (ScythCount - (i + 1)) * (ShurikenSize*4);
-                if (ActivePerks.Any(p => (new [] {"piercing-1"}).Contains(p.Id)))
-                {
-                    scyth.PiercingLeft = 2;
-                }
-                else if (ActivePerks.Any(p => (new [] {"piercing-2"}).Contains(p.Id)))
-                {
-                    scyth.PiercingLeft = 10;
-                }
-                GetParent().AddChild(scyth);
-
-                scyth.ApplyCentralImpulse(direction * ActionForce);
+                scyth.PiercingLeft = PierceCount;
 
                 scyth.OnCropHarvested += OnCropHarvested;
                 scyth.OnWeedHarvested += OnWeedHarvested;
                 scyth.OnAngryKilled += OnAngryKilled;
 
+                GetParent().AddChild(scyth);
+
+                scyth.ApplyCentralImpulse(direction * ActionForce);
             }
         }
 

@@ -137,6 +137,12 @@ public class PlayArea : Node2D
             Input.MouseMode = Input.MouseModeEnum.Hidden;
         }
 
+        if (Input.IsActionJustPressed("DEBUG_spawn_angries"))
+        {
+            SpawnAngryPlant();
+            Camera.Shake(1.4f, 2f);
+        }
+
         if (TriggerEndOfGame)
         {
             GetTree().Paused = true;
