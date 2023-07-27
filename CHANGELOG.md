@@ -1,6 +1,6 @@
 # Change log
 
-## Latest
+## Build 3
 
 ### Gameplay
 - Auto throw is now toggleable by pressing `R`.
@@ -25,6 +25,3 @@
 ### Bug fixes
 - Fixed a bug connecting to `timeout` signal too many times causing some lag issues.
 - Fixed Restart bug not clearing all items and variables.
-
-
-## Previous
