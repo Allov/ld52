@@ -21,7 +21,10 @@ public class Cooldown : Godot.Object
     public void Reset(float time)
     {
         Timer.WaitTime = time;
-        Timer.Connect("timeout", this, nameof(OnTimeout));
+        if (!Timer.IsConnected("timeout", this, nameof(OnTimeout)))
+        {
+            Timer.Connect("timeout", this, nameof(OnTimeout));
+        }
         OnTimeout();
     }
 

@@ -7,7 +7,7 @@ position = Vector2( 1218.01, 129.052 )
 rotation = 1.57079
 z_index = 1
 collision_layer = 66
-collision_mask = 13
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
 polygon = PoolVector2Array( 6.94794, 10.01, 182.948, 10.0111, 182.948, 58.0111, 54.9476, 58.0103, 54.9468, 186.01, 6.94682, 186.01 )
@@ -21,7 +21,7 @@ polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64
 position = Vector2( 256.186, 128.495 )
 z_index = 1
 collision_layer = 66
-collision_mask = 13
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
 polygon = PoolVector2Array( 7.814, 7.505, 183.814, 7.505, 183.814, 55.505, 55.814, 55.505, 55.814, 183.505, 7.814, 183.505 )
@@ -36,7 +36,7 @@ position = Vector2( 255.753, 642.046 )
 rotation = -1.57079
 z_index = 1
 collision_layer = 66
-collision_mask = 13
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls4"]
 polygon = PoolVector2Array( 10.0461, 8.24693, 186.046, 8.24583, 186.046, 56.2458, 58.0464, 56.2466, 58.0472, 184.247, 10.0472, 184.247 )
@@ -51,7 +51,7 @@ position = Vector2( 1216.19, 642.476 )
 rotation = -3.14159
 z_index = 1
 collision_layer = 66
-collision_mask = 13
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls5"]
 polygon = PoolVector2Array( 8.18994, 10.476, 184.19, 10.4755, 184.19, 58.4755, 56.1901, 58.4758, 56.1904, 186.476, 8.19043, 186.476 )
@@ -66,7 +66,7 @@ position = Vector2( 960, 520 )
 rotation = -3.14159
 z_index = 1
 collision_layer = 64
-collision_mask = 9
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls6"]
 polygon = PoolVector2Array( 8.18597, 10.228, 184.186, 10.2275, 184.186, 58.2275, 56.1861, 58.2279, 56.1865, 186.228, 8.18646, 186.228 )
@@ -80,7 +80,7 @@ polygon = PoolVector2Array( 0, -4.57764e-05, 192, -4.57764e-05, 192, 64.2475, 64
 position = Vector2( 512.186, 256.99 )
 z_index = 1
 collision_layer = 64
-collision_mask = 9
+collision_mask = 133
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls7"]
 polygon = PoolVector2Array( 7.81403, 7.01001, 183.814, 7.01001, 183.814, 55.01, 55.814, 55.01, 55.814, 183.01, 7.81403, 183.01 )

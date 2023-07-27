@@ -13,8 +13,9 @@ radius = 56.1427
 radius = 56.0
 
 [node name="AngryCorn" instance=ExtResource( 3 )]
+collision_layer = 136
 Health = 12
-StartingForce = 20.0
+StartingForce = 100.0
 Drops = [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ) ]
 
 [node name="CollisionShape2D" parent="." index="1"]

@@ -10,6 +10,8 @@ public class UI : CanvasLayer
     private Label MoneyLabel;
     private Label CropsLabel;
     private Label StatsLabel;
+    private TextureProgress WeedProgress;
+    private Label WeedProgressText;
     private PlayArea PlayArea;
     private Shop Shop;
     private Tween Tween;
@@ -20,6 +22,7 @@ public class UI : CanvasLayer
     private Sprite CurrentCursor;
     private bool SettingsActive;
     private int DEBUG_AddedGoldValue = 100;
+    private float OldWeedProgress = 0;
 
     static string GetOrdinalNumber(int number)
     {
@@ -49,6 +52,12 @@ public class UI : CanvasLayer
         MoneyLabel = GetNode<Label>("MoneyLabel");
         CropsLabel = GetNode<Label>("HarvestCounter");
         StatsLabel = GetNode<Label>("PlayerStats");
+        WeedProgress = GetNode<TextureProgress>("WeedProgress");
+        WeedProgress.Value = 0f;
+        WeedProgressText = GetNode<Label>("WeedProgress/CenterContainer/WeedProgressText");
+        WeedProgressText.Text = $"Weed Progress 0%";
+
+
         PlayArea = GetNode<PlayArea>(PlayAreaNode);
         Shop = GetNode<Shop>("Shop");
         Tween = new Tween();
@@ -91,7 +100,7 @@ public class UI : CanvasLayer
         if (Input.IsActionJustPressed("DEBUG_give_gold"))
         {
             PlayArea.Player.GoldCoins += DEBUG_AddedGoldValue;
-             DEBUG_AddedGoldValue += DEBUG_AddedGoldValue * 10;
+            DEBUG_AddedGoldValue += DEBUG_AddedGoldValue * 10;
         }
 
         UpdateUI(delta);
@@ -111,12 +120,21 @@ public class UI : CanvasLayer
             OldCoinsCount = PlayArea.Player.GoldCoins;
         }
 
+        if (OldWeedProgress != PlayArea.WeedProgress)
+        {
+            Tween.InterpolateProperty(WeedProgress, "value", WeedProgress.Value, PlayArea.WeedProgress, .05f, Tween.TransitionType.Expo, Tween.EaseType.Out);
+            Tween.Start();
+
+            WeedProgressText.Text = $"Weed Progress {Math.Ceiling(PlayArea.WeedProgress * 100)}%";
+        }
+
         GetNode<Label>("CalendarLabel").Text = $"{PlayArea.NumberOfDays}{GetOrdinalNumber(PlayArea.NumberOfDays)} day";
         CropsLabel.Text = $"C:{PlayArea.Player.HarvestedCropsCount.ToString("n0")}\nW:{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
 
         StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.DashCooldownTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
         StatsLabel.Text += $"\n";
         StatsLabel.Text += $"SPEED: {PlayArea.Player.Speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
+
     }
 
     private void UpdateMoneyLabel(int coins)

@@ -44,6 +44,7 @@ public class Player : KinematicBody2D
     [Export] public float AddedGrowRadius { get; set; }
     public float Size { get; private set; }
     [Export] public int PierceCount { get; set; }
+    [Export] public bool Disabled { get; set; }
 
     [Export] public bool AutoShoot = false;
 
@@ -60,6 +61,8 @@ public class Player : KinematicBody2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(float delta)
     {
+        if (Disabled) return;
+
         if (Input.IsActionJustPressed("toggle_auto_shoot"))
         {
             AutoShoot = !AutoShoot;

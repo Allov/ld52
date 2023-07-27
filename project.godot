@@ -172,6 +172,7 @@ DEBUG_give_gold={
 2d_physics/layer_5="Tiles"
 2d_physics/layer_6="Drops"
 2d_physics/layer_7="Obstacles"
+2d_physics/layer_8="Small Enemies"
 
 [mono]
 

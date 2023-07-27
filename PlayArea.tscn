@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://AngryTomato.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Tile.tscn" type="PackedScene" id=2]
@@ -7,8 +7,17 @@
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=5]
 [ext_resource path="res://PlayArea.cs" type="Script" id=6]
 
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 1 ), 0.0, -0.509091, 0, 1, Vector2( 1, 0.490909 ), -0.509091, 0.0, 1, 0 ]
+
+[sub_resource type="Curve" id=2]
+max_value = 20.0
+_data = [ Vector2( 0, 0.363636 ), 0.0, 4.39921, 0, 0, Vector2( 0.997305, 20 ), 30.177, 0.0, 0, 0 ]
+
 [node name="PlayArea" type="Node2D"]
 script = ExtResource( 6 )
+DayLengthCurve = SubResource( 1 )
+AngryHealthCurve = SubResource( 2 )
 TileScene = ExtResource( 2 )
 GrowTime = 10.0
 DaysLabelNodePath = NodePath("../../UI/CalendarScroll/HBoxContainer/CalendarLabel")
@@ -27,4 +36,4 @@ collision_mask = 13
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls"]
 position = Vector2( 0, -8 )
-polygon = PoolVector2Array( 0, 800, 1536, 808, 1536, 8, 0, 8, 0, -56, 1600, -56, 1600, 968, -64, 968, -64, 8, 0, 8 )
+polygon = PoolVector2Array( 0, 800, 1536, 808, 1536, 8, 0, 8, 0, -56, 1600, -56, 1600, 968, -64, 968, -64, -56, 0, -56 )

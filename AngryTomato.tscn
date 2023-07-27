@@ -9,8 +9,8 @@
 radius = 112.0
 
 [node name="AngryTomato" instance=ExtResource( 1 )]
-Health = 50
-StartingForce = 25.0
+Health = 70
+StartingForce = 50.0
 Drops = [ ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ) ]
 
 [node name="CollisionShape2D" parent="." index="1"]

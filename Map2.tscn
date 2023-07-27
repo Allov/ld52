@@ -7,7 +7,7 @@ position = Vector2( 1343.75, 192.494 )
 rotation = 1.57079
 z_index = 1
 collision_layer = 66
-collision_mask = 29
+collision_mask = 149
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
 polygon = PoolVector2Array( 7.50594, 7.75, 183.506, 7.7511, 183.505, 183.751, 7.50484, 183.75 )
@@ -22,7 +22,7 @@ position = Vector2( 384.248, 385.98 )
 rotation = 1.57079
 z_index = 1
 collision_layer = 66
-collision_mask = 29
+collision_mask = 149
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
 polygon = PoolVector2Array( 6.01993, 8.24805, 182.02, 8.24915, 182.019, 184.249, 6.01883, 184.248 )
