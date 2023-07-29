@@ -5,6 +5,7 @@ using System.Linq;
 
 public class PlayArea : Node2D
 {
+    [Export] public float PercentDanger = .8f;
     [Export] public float PercentEndGame = .9f;
     [Export] public int Width = 24;
     [Export] public int Height = 12;
@@ -402,6 +403,11 @@ public class PlayArea : Node2D
                 SpawnAngryPlantAt(tile.GlobalPosition);
             }
         }
+    }
+
+    public bool InDanger()
+    {
+        return WeedProgress > PercentEndGame * PercentDanger;
     }
 }
 

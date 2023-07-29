@@ -23,6 +23,12 @@ public class UI : CanvasLayer
     private bool SettingsActive;
     private int DEBUG_AddedGoldValue = 100;
     private float OldWeedProgress = 0;
+    private TextureRect WeedProgressCorn;
+    private ColorRect Vignette;
+    private bool OldDanger;
+
+    [Export] public Color StartingHealthColor { get; set; }
+    [Export] public Color DangerHealthColor { get; set; }
 
     static string GetOrdinalNumber(int number)
     {
@@ -55,7 +61,12 @@ public class UI : CanvasLayer
         WeedProgress = GetNode<TextureProgress>("WeedProgress");
         WeedProgress.Value = 0f;
         WeedProgressText = GetNode<Label>("WeedProgress/CenterContainer/WeedProgressText");
-        WeedProgressText.Text = $"Weed Progress 0%";
+        WeedProgressText.Text = $"0%  ";
+
+        WeedProgressCorn = GetNode<TextureRect>("WeedProgress/WeedProgressCorn");
+
+        Vignette = GetNode<ColorRect>("Vignette");
+        HealthVignette(StartingHealthColor);
 
 
         PlayArea = GetNode<PlayArea>(PlayAreaNode);
@@ -123,9 +134,29 @@ public class UI : CanvasLayer
         if (OldWeedProgress != PlayArea.WeedProgress)
         {
             Tween.InterpolateProperty(WeedProgress, "value", WeedProgress.Value, PlayArea.WeedProgress, .05f, Tween.TransitionType.Expo, Tween.EaseType.Out);
-            Tween.Start();
+            StartingHealthColor = new Color("#070707");
 
-            WeedProgressText.Text = $"Weed Progress {Math.Ceiling(PlayArea.WeedProgress * 100)}%";
+            // Tween.InterpolateProperty(this, nameof(HealthVignette), null, "#9a1515", .1f);
+
+            WeedProgressText.Text = $"{Math.Ceiling(PlayArea.WeedProgress * 100)}%  ";
+            var targetRectPosition = new Vector2((int)((float)WeedProgress.RectSize.x * PlayArea.WeedProgress) - 16, WeedProgress.RectPosition.y - 32);
+            Tween.InterpolateProperty(WeedProgressCorn, "rect_position", WeedProgressCorn.RectPosition, targetRectPosition, .5f, Tween.TransitionType.Expo, Tween.EaseType.Out);
+
+            Tween.Start();
+        }
+
+        if (OldDanger != PlayArea.InDanger())
+        {
+            if (PlayArea.InDanger())
+            {
+                Tween.InterpolateMethod(this, nameof(HealthVignette), StartingHealthColor, DangerHealthColor, 2f);
+            }
+            else
+            {
+                Tween.InterpolateMethod(this, nameof(HealthVignette), DangerHealthColor, StartingHealthColor, .5f);
+            }
+
+            OldDanger = PlayArea.InDanger();
         }
 
         GetNode<Label>("CalendarLabel").Text = $"{PlayArea.NumberOfDays}{GetOrdinalNumber(PlayArea.NumberOfDays)} day";
@@ -135,6 +166,12 @@ public class UI : CanvasLayer
         StatsLabel.Text += $"\n";
         StatsLabel.Text += $"SPEED: {PlayArea.Player.Speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
 
+    }
+
+    private void HealthVignette(Color color)
+    {
+        var sm = Vignette.Material as ShaderMaterial;
+        sm.SetShaderParam("color", color);
     }
 
     private void UpdateMoneyLabel(int coins)
