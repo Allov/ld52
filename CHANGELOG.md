@@ -2,6 +2,8 @@
 
 ## Build 4
 
+## Gameplay & Balance
+
 - Angry Plants will now spawn higher tier weed flowers.
 - New Perk: Homing Shuriken. When hitting an angry, it will aim for the nearest angry.
 - Homing perk is available when buying the piercing perk.
@@ -12,6 +14,10 @@
 - Perk Balance: Speed Increase is now 50% (from 25%).
 - Perk Balance: Piercing Shurikens now pierce through 1 enemy per upgrade (from 2).
 - Added a new map to the pool.
+- Shurikens should now spawn relative to the center of the player.
+
+## UI & Tools
+
 - Camera will now smoothly drag when reaching left and right border. This is to prepare for map navigation.
 - Zoomed out the field view to let more space for UI and props.
 - Shurikens and the samurai now have shadows.
