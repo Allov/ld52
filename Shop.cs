@@ -247,6 +247,7 @@ public class Shop : PanelContainer
         var boughtPerk = BuyablePerks[index];
         Player.GoldCoins = Player.GoldCoins - boughtPerk.Cost;
         boughtPerk.Effect(this, boughtPerk);
+        boughtPerk.Locked = false;
         Player.AddPerk(boughtPerk);
 
         if (boughtPerk.Unique)
@@ -265,7 +266,7 @@ public class Shop : PanelContainer
         var path = "ShopContainer/Items/Item" + index;
         var buyButtonPath = path + "/Item/BuyLock/Buy";
         var lockButtonPath = path + "/Item/BuyLock/Lock";
-        GetNode<Button>(buyButtonPath).Disabled = true;
+        // GetNode<Button>(buyButtonPath).Disabled = true;
         GetNode<Button>(lockButtonPath).Disabled = true;
     }
 
@@ -283,7 +284,7 @@ public class Shop : PanelContainer
         }
         // pick 3 random perks
         var newBuyablePerks = Perks
-            .Where(perk => perk.CanSpawn(this))
+            .Where(perk => !perk.Locked && perk.CanSpawn(this))
             .ToArray()
             .PickN(NumberOfBuyableItems);
 
@@ -298,6 +299,10 @@ public class Shop : PanelContainer
             {
                 BuyablePerks[i] = newBuyablePerks[i];
             }
+            else
+            {
+                // BuyablePerks[i].Locked = false;
+            }
 
 
             var path = "ShopContainer/Items/Item" + i;
@@ -305,7 +310,7 @@ public class Shop : PanelContainer
             GetNode<Label>(path + "/Item/Name").Text = BuyablePerks[i].Name;
             GetNode<Button>(path + "/Item/BuyLock/Buy").Text = $"$ {BuyablePerks[i].Cost}";
             GetNode<Button>(path + "/Item/BuyLock/Buy").Disabled = Player.GoldCoins < BuyablePerks[i].Cost;
-            GetNode<Button>(path + "/Item/BuyLock/Lock").Disabled = false;
+            GetNode<Button>(path + "/Item/BuyLock/Lock").Disabled = BuyablePerks[i].Locked;
             GetNode<Label>(path + "/Item/Description").Text = BuyablePerks[i].Description;
         }
 

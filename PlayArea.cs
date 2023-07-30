@@ -52,6 +52,8 @@ public class PlayArea : Node2D
     [Export] public NodePath AngriesNodePath;
     public YSort Angries;
     [Export] public PackedScene[] Maps;
+    [Export] public bool SpawnAngriesToday { get; set; }
+
     public float WeedProgress { get; private set; }
     [Export] public Curve DayLengthCurve { get; set; }
     [Export] public Curve AngryHealthCurve { get; set; }
@@ -119,10 +121,12 @@ public class PlayArea : Node2D
         AddChild(tween);
         tween.Start();
 
+        CurrentDay = StartingDay + 1;
+
+        GrowTime = GrowTime * (DayLengthCurve.Interpolate((float)(CurrentDay) / (float)MaxNumberOfDays));
         GrowCooldown = new Cooldown(GrowTime, this);
         GrowCooldown.Use();
 
-        CurrentDay = StartingDay;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -161,10 +165,9 @@ public class PlayArea : Node2D
 
             SpawnWeeds();
 
-            SpawnAngries();
+            SpawnAngriesToday = (CurrentDay) % 5 == 0;
 
-
-            if (CurrentDay > 0 && CurrentDay % SpawnFrequency == 0)
+            if (CurrentDay > 0 && (CurrentDay) % SpawnFrequency == 0)
             {
                 Shop.OpenShop();
             }
@@ -173,8 +176,15 @@ public class PlayArea : Node2D
                 Shop.Visible = false;
             }
 
-            GrowCooldown.Reset(GrowCooldown.Time * (DayLengthCurve.Interpolate((float)CurrentDay / (float)MaxNumberOfDays)));
+            GrowTime = GrowCooldown.Time * (DayLengthCurve.Interpolate((float)(CurrentDay) / (float)MaxNumberOfDays));
+            GrowCooldown.Reset(GrowTime);
             GrowCooldown.Use();
+        }
+
+        if (SpawnAngriesToday && GrowCooldown.TimeLeft() < GrowTime * .5f)
+        {
+            SpawnAngriesToday = false;
+            SpawnAngries();
         }
 
         TriggerEndOfGame = WeedTiles.Count >=  FieldCount * PercentEndGame;
@@ -205,8 +215,11 @@ public class PlayArea : Node2D
 
         if (CurrentDay == 10)
         {
-            SpawnAngryPlant();
-            SpawnAngryPlant();
+            for (var i = 0; i < 3; i++)
+            {
+                SpawnAngryPlant();
+            }
+
             Camera.Shake(1.4f, 2f);
         }
 

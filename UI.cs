@@ -136,12 +136,9 @@ public class UI : CanvasLayer
 
     private void UpdateUI(float delta)
     {
-        if (!GetTree().Paused)
-        {
-            var timeRatio = PlayArea.GrowCooldown.TimeLeft() / PlayArea.GrowTime;
-            GD.Print(timeRatio);
-            GetNode<Sprite>("ClockNeedle").Rotation = Mathf.Lerp(0f, 2f * Mathf.Pi, 1f - timeRatio);
-        }
+        UpdateClock();
+
+        GetNode<Sprite>("ClockAngry").Visible = PlayArea.SpawnAngriesToday;
 
         if (OldCoinsCount != PlayArea.Player.GoldCoins)
         {
@@ -183,14 +180,29 @@ public class UI : CanvasLayer
             OldDanger = PlayArea.InDanger();
         }
 
-        GetNode<Label>("CalendarLabel").Text = $"  {PlayArea.CurrentDay + 1}{GetOrdinalNumber(PlayArea.CurrentDay + 1)} day";
+        GetNode<Label>("CalendarLabel").Text = $"  {PlayArea.CurrentDay}{GetOrdinalNumber(PlayArea.CurrentDay)} day";
         CropsLabel.Text = $"{PlayArea.Player.HarvestedCropsCount.ToString("n0")}";
+        // CropsLabel.Text = CropsLabel.Text.PadLeft(3, '0');
+        // CropsLabel.Text = CropsLabel.Text.PadLeft(4, ',');
+        // CropsLabel.Text = CropsLabel.Text.PadLeft(7, '0');
         WeedLabel.Text = $"{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
+        // WeedLabel.Text = WeedLabel.Text.PadLeft(3, '0');
+        // WeedLabel.Text = WeedLabel.Text.PadLeft(4, ',');
+        // WeedLabel.Text = WeedLabel.Text.PadLeft(7, '0');
 
         StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.DashCooldownTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
         StatsLabel.Text += $"\n";
         StatsLabel.Text += $"SPEED: {PlayArea.Player.Speed}m/s    SHUR: {PlayArea.Player.ScythCount}       SSIZ: {PlayArea.Player.ShurikenSize}    THRN: {PlayArea.Player.ThornTimer}s";
 
+    }
+
+    private void UpdateClock()
+    {
+        if (!GetTree().Paused)
+        {
+            var timeRatio = PlayArea.GrowCooldown.TimeLeft() / PlayArea.GrowTime;
+            GetNode<Sprite>("ClockNeedle").Rotation = Mathf.Lerp(0f, 2f * Mathf.Pi, 1f - timeRatio);
+        }
     }
 
     private void HealthVignette(Color color)

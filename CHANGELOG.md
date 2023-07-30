@@ -19,6 +19,7 @@
 
 ## UI & Tools
 
+- A new clock has been added to display time of day and be clearer about when it's time to grow.
 - Camera will now smoothly drag when reaching left and right border. This is to prepare for map navigation.
 - Zoomed out the field view to let more space for UI and props.
 - Shurikens and the samurai now have shadows.
