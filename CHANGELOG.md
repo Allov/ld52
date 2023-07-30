@@ -14,7 +14,7 @@
 - Perk Balance: Longer Shurikens adds 250ms (from 500ms).
 - Perk Balance: Speed Increase is now 50% (from 25%).
 - Perk Balance: Piercing Shurikens now pierce through 1 enemy per upgrade (from 2).
-- Added a new map to the pool.
+- Added 2 new maps to the pool.
 - Shurikens should now spawn relative to the center of the player.
 
 ## UI & Tools
