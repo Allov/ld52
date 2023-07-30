@@ -138,8 +138,6 @@ public class UI : CanvasLayer
     {
         UpdateClock();
 
-        GetNode<Sprite>("ClockAngry").Visible = PlayArea.SpawnAngriesToday;
-
         if (OldCoinsCount != PlayArea.Player.GoldCoins)
         {
             // MoneyLabel.Text = $"$ {PlayArea.Player.GoldCoins}";
@@ -203,6 +201,9 @@ public class UI : CanvasLayer
             var timeRatio = PlayArea.GrowCooldown.TimeLeft() / PlayArea.GrowTime;
             GetNode<Sprite>("ClockNeedle").Rotation = Mathf.Lerp(0f, 2f * Mathf.Pi, 1f - timeRatio);
         }
+        GetNode<Sprite>("ClockAngry").Visible = PlayArea.SpawnAngriesToday;
+        GetNode<Label>("AngryField").Visible = PlayArea.SpawnAngriesToday;
+        GetNode<Sprite>("ClockShop").Visible = PlayArea.OpenShopToday;
     }
 
     private void HealthVignette(Color color)

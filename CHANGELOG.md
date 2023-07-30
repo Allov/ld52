@@ -19,7 +19,8 @@
 
 ## UI & Tools
 
-- A new clock has been added to display time of day and be clearer about when it's time to grow.
+- A new clock has been added to display time of day and be clearer about when it's time to grow, time for an attack and when the shop opens.
+- A message appears the day of an angry attack.
 - Camera will now smoothly drag when reaching left and right border. This is to prepare for map navigation.
 - Zoomed out the field view to let more space for UI and props.
 - Shurikens and the samurai now have shadows.
@@ -31,6 +32,7 @@
 - Walls are now obvious around the field.
 - Scene transitions should be a bit smoother and indicates clearly a loading is happening.
 - It is now possible to open the pause menu when is shop.
+- New song :)
 
 
 ## Build 3

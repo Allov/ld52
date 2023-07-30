@@ -52,6 +52,8 @@ public class PlayArea : Node2D
     [Export] public NodePath AngriesNodePath;
     public YSort Angries;
     [Export] public PackedScene[] Maps;
+    [Export] public bool OpenShopToday;
+
     [Export] public bool SpawnAngriesToday { get; set; }
 
     public float WeedProgress { get; private set; }
@@ -169,11 +171,7 @@ public class PlayArea : Node2D
 
             if (CurrentDay > 0 && (CurrentDay) % SpawnFrequency == 0)
             {
-                Shop.OpenShop();
-            }
-            else
-            {
-                Shop.Visible = false;
+                OpenShopToday = true;
             }
 
             GrowTime = GrowCooldown.Time * (DayLengthCurve.Interpolate((float)(CurrentDay) / (float)MaxNumberOfDays));
@@ -185,6 +183,12 @@ public class PlayArea : Node2D
         {
             SpawnAngriesToday = false;
             SpawnAngries();
+        }
+
+        if (OpenShopToday && GrowCooldown.TimeLeft() < GrowTime * .25f)
+        {
+            OpenShopToday = false;
+            Shop.OpenShop();
         }
 
         TriggerEndOfGame = WeedTiles.Count >=  FieldCount * PercentEndGame;

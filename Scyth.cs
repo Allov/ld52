@@ -55,7 +55,6 @@ public class Scyth : RigidBody2D
     {
         if (HomingLeft > 0 && Hit)
         {
-            LinearVelocity = Vector2.Zero;
 
             var angries = GetTree().GetNodesInGroup("AngryPlants").Cast<BaseAngry>();
 
@@ -75,6 +74,7 @@ public class Scyth : RigidBody2D
             }
             if (nearestAngry != null)
             {
+                LinearVelocity = Vector2.Zero;
                 ApplyCentralImpulse((nearestAngry.GlobalPosition - GlobalPosition).Normalized() * 8f);
             }
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=65 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=2]
@@ -44,6 +44,8 @@
 [ext_resource path="res://Assets/clock.png" type="Texture" id=42]
 [ext_resource path="res://Assets/clock_needle.png" type="Texture" id=43]
 [ext_resource path="res://Assets/angry-plant.png" type="Texture" id=44]
+[ext_resource path="res://Assets/chest.png" type="Texture" id=45]
+[ext_resource path="res://font.tres" type="DynamicFont" id=46]
 
 [sub_resource type="Curve" id=26]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.312668, 0.5 ), -2.36091, -0.0132264, 0, 1, Vector2( 1, 0.490909 ), -0.0132264, 0.0, 1, 0 ]
@@ -226,6 +228,54 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0.501961 ), Color( 1, 0, 0, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("ClockShop:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2, 2 ), Vector2( 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("ClockShop:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 0.937255, 0, 1 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("AngryField:rect_scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1.1, 1.1 ), Vector2( 1, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("AngryField:modulate")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 0, 0, 0.509804 ), Color( 1, 0, 0, 1 ) ]
 }
 
 [sub_resource type="Animation" id=30]
@@ -1269,10 +1319,10 @@ margin_bottom = 646.0
 size_flags_horizontal = 3
 
 [node name="ColorPicker" type="ColorPicker" parent="UI/Settings/2Cols/Col2/Cursor/VBoxContainer/Color"]
-margin_left = 40.0
-margin_top = 40.0
-margin_right = 617.0
-margin_bottom = 602.0
+margin_left = 44.0
+margin_top = 44.0
+margin_right = 621.0
+margin_bottom = 606.0
 size_flags_horizontal = 3
 presets_enabled = false
 presets_visible = false
@@ -1336,6 +1386,30 @@ texture = ExtResource( 43 )
 [node name="ClockAngry" type="Sprite" parent="UI"]
 position = Vector2( 72, 808 )
 texture = ExtResource( 44 )
+
+[node name="ClockShop" type="Sprite" parent="UI"]
+modulate = Color( 1, 0.998883, 0.9822, 0.0177997 )
+position = Vector2( 32, 760 )
+scale = Vector2( 1.9822, 1.9822 )
+texture = ExtResource( 45 )
+
+[node name="AngryField" type="Label" parent="UI"]
+modulate = Color( 1, 0, 0, 0.53598 )
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -176.0
+margin_top = -71.9999
+margin_right = 205.0
+margin_bottom = -31.9999
+rect_scale = Vector2( 1.09466, 1.09466 )
+rect_pivot_offset = Vector2( 190, 20 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 5
+custom_constants/shadow_offset_y = 5
+custom_fonts/font = ExtResource( 46 )
+text = "- THE FIELD IS ANGRY -"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="UI"]
 autoplay = "BounceAngry"
