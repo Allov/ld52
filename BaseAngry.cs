@@ -13,6 +13,8 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
     public float EnrageTime = 5000f;
     [Export] public int Health { get; set; } = 10;
     public bool Dead { get; private set; }
+    [Export] public int StageMin { get; set; }
+    [Export] public int StageMax { get; set; }
 
     [Export] public int GoldDrop;
     [Export] public PackedScene[] Drops;
@@ -73,7 +75,7 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
         {
             if (!area.IsInGroup("Weed"))
             {
-                tile.Stomp();
+                tile.Stomp(RandomHelpers.RangeInt(StageMin, StageMax));
             }
         }
     }
@@ -105,17 +107,21 @@ public class BaseAngry : RigidBody2D, IHealth, IHittable
         GetNode<Particles2D>("SpawnParticle").Emitting = true;
     }
 
-    public void Hit()
+    public void Hit(bool pierce)
     {
         if (Dead) return;
 
         GetNode<AnimationPlayer>("AnimationPlayer").Play("Hit");
         GetNode<AnimationPlayer>("AnimationPlayer").Queue("run");
 
-        var hitString = $"Hit{RandomHelpers.RangeInt(1, 3)}";
+        var hitString = $"Hit{RandomHelpers.RangeInt(1, 2)}";
+        if (pierce)
+        {
+            hitString = "Hit3";
+        }
+
         GetNode<AudioStreamPlayer2D>(hitString).PitchScale = (float)Math.Round((RandomHelpers.RangeDouble(.6D, .8D)), 1);
         GetNode<AudioStreamPlayer2D>(hitString).Play();
-
     }
 
     public void Kill()

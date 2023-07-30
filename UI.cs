@@ -26,6 +26,7 @@ public class UI : CanvasLayer
     private TextureRect WeedProgressCorn;
     private ColorRect Vignette;
     private bool OldDanger;
+    private Label WeedLabel;
 
     [Export] public Color StartingHealthColor { get; set; }
     [Export] public Color DangerHealthColor { get; set; }
@@ -57,6 +58,7 @@ public class UI : CanvasLayer
     {
         MoneyLabel = GetNode<Label>("MoneyLabel");
         CropsLabel = GetNode<Label>("HarvestCounter");
+        WeedLabel = GetNode<Label>("WeedCounter");
         StatsLabel = GetNode<Label>("PlayerStats");
         WeedProgress = GetNode<TextureProgress>("WeedProgress");
         WeedProgress.Value = 0f;
@@ -64,6 +66,7 @@ public class UI : CanvasLayer
         WeedProgressText.Text = $"0%  ";
 
         WeedProgressCorn = GetNode<TextureRect>("WeedProgress/WeedProgressCorn");
+        WeedProgressCorn.RectPosition = new Vector2(0f - 16f, WeedProgress.RectPosition.y);
 
         Vignette = GetNode<ColorRect>("Vignette");
         HealthVignette(StartingHealthColor);
@@ -133,13 +136,13 @@ public class UI : CanvasLayer
 
         if (OldWeedProgress != PlayArea.WeedProgress)
         {
-            Tween.InterpolateProperty(WeedProgress, "value", WeedProgress.Value, PlayArea.WeedProgress, .05f, Tween.TransitionType.Expo, Tween.EaseType.Out);
+            Tween.InterpolateProperty(WeedProgress, "value", WeedProgress.Value, PlayArea.WeedProgress, .5f, Tween.TransitionType.Expo, Tween.EaseType.Out);
             StartingHealthColor = new Color("#070707");
 
             // Tween.InterpolateProperty(this, nameof(HealthVignette), null, "#9a1515", .1f);
 
             WeedProgressText.Text = $"{Math.Ceiling(PlayArea.WeedProgress * 100)}%  ";
-            var targetRectPosition = new Vector2((int)((float)WeedProgress.RectSize.x * PlayArea.WeedProgress) - 16, WeedProgress.RectPosition.y - 32);
+            var targetRectPosition = new Vector2((int)((float)WeedProgress.RectSize.x * PlayArea.WeedProgress) - 16, WeedProgress.RectPosition.y);
             Tween.InterpolateProperty(WeedProgressCorn, "rect_position", WeedProgressCorn.RectPosition, targetRectPosition, .5f, Tween.TransitionType.Expo, Tween.EaseType.Out);
 
             Tween.Start();
@@ -159,8 +162,9 @@ public class UI : CanvasLayer
             OldDanger = PlayArea.InDanger();
         }
 
-        GetNode<Label>("CalendarLabel").Text = $"{PlayArea.NumberOfDays}{GetOrdinalNumber(PlayArea.NumberOfDays)} day";
-        CropsLabel.Text = $"C:{PlayArea.Player.HarvestedCropsCount.ToString("n0")}\nW:{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
+        GetNode<Label>("CalendarLabel").Text = $"  {PlayArea.CurrentDay}{GetOrdinalNumber(PlayArea.CurrentDay)} day";
+        CropsLabel.Text = $"{PlayArea.Player.HarvestedCropsCount.ToString("n0")}";
+        WeedLabel.Text = $"{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
 
         StatsLabel.Text = $"SHOOT: {PlayArea.Player.ShootTime}s      DASH: {PlayArea.Player.DashCooldownTime}s    SIZE: {PlayArea.Player.Size}    STIM: {PlayArea.Player.ShurikenLifeTime}s";
         StatsLabel.Text += $"\n";

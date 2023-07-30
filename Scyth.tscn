@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Scyth.cs" type="Script" id=1]
 [ext_resource path="res://Assets/shuriken.png" type="Texture" id=2]
@@ -6,11 +6,17 @@
 [ext_resource path="res://Assets/frrt.org.ogg" type="AudioStream" id=4]
 [ext_resource path="res://Assets/white.png" type="Texture" id=5]
 [ext_resource path="res://Assets/thunk.wav" type="AudioStream" id=6]
+[ext_resource path="res://Trail.cs" type="Script" id=7]
+[ext_resource path="res://Assets/shuriken_shadow.png" type="Texture" id=8]
+[ext_resource path="res://RotatingSprite.cs" type="Script" id=10]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
 rough = true
 bounce = 1.0
+
+[sub_resource type="Curve" id=7]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 12.0
@@ -27,15 +33,15 @@ gradient = SubResource( 4 )
 [sub_resource type="ParticlesMaterial" id=6]
 lifetime_randomness = 1.0
 emission_shape = 1
-emission_sphere_radius = 12.0
+emission_sphere_radius = 16.0
 flag_disable_z = true
 gravity = Vector3( 0, 0, 0 )
+initial_velocity = 16.0
+initial_velocity_random = 1.0
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 4.0
 color_ramp = SubResource( 5 )
-hue_variation = -0.24
-hue_variation_random = 0.99
 
 [node name="Scyth" type="RigidBody2D"]
 modulate = Color( 1, 1, 1, 0.662745 )
@@ -46,16 +52,45 @@ physics_material_override = SubResource( 1 )
 continuous_cd = 2
 contacts_reported = 1
 contact_monitor = true
-angular_velocity = 300.0
 script = ExtResource( 1 )
 
+[node name="Line2D" type="Line2D" parent="."]
+width = 16.0
+width_curve = SubResource( 7 )
+default_color = Color( 0, 0, 0, 0.180392 )
+joint_mode = 1
+script = ExtResource( 7 )
+MaxLength = 6
+
 [node name="Sprite2" type="Sprite" parent="."]
+visible = false
 position = Vector2( 0, 1 )
 texture = ExtResource( 3 )
+
+[node name="ShurikenShadow" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0.658824 )
+show_behind_parent = true
+position = Vector2( 16, 16 )
+scale = Vector2( 3.2, 3.2 )
+texture = ExtResource( 8 )
+script = ExtResource( 10 )
+RotationSpeed = 200.0
+
+[node name="Line2D2" type="Line2D" parent="ShurikenShadow"]
+modulate = Color( 1, 1, 1, 0.658824 )
+scale = Vector2( 0.3125, 0.3125 )
+width = 16.0
+width_curve = SubResource( 7 )
+default_color = Color( 0, 0, 0, 0.443137 )
+joint_mode = 1
+script = ExtResource( 7 )
+MaxLength = 6
 
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 4, 4 )
 texture = ExtResource( 2 )
+script = ExtResource( 10 )
+RotationSpeed = 200.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
@@ -70,8 +105,6 @@ shape = SubResource( 3 )
 
 [node name="Particles2D" type="Particles2D" parent="."]
 show_behind_parent = true
-amount = 32
-lifetime = 0.3
 local_coords = false
 process_material = SubResource( 6 )
 texture = ExtResource( 5 )
@@ -79,11 +112,13 @@ texture = ExtResource( 5 )
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
 autoplay = true
+bus = "SFX"
 
 [node name="Thunk" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 6 )
 volume_db = -15.0
 pitch_scale = 1.1
+bus = "SFX"
 
 [connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

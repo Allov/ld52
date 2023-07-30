@@ -45,8 +45,8 @@ public class Player : KinematicBody2D
     public float Size { get; private set; }
     [Export] public int PierceCount { get; set; }
     [Export] public bool Disabled { get; set; }
-
     [Export] public bool AutoShoot = false;
+    [Export] public int HomingCount { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -77,7 +77,7 @@ public class Player : KinematicBody2D
         var horizontalAttack = Input.GetActionStrength("attack_right") - Input.GetActionStrength("attack_left");
         var verticalAttack = Input.GetActionStrength("attack_down") - Input.GetActionStrength("attack_up");
 
-        var attackingController = (horizontalAttack != 0 || verticalAttack != 0);;
+        var attackingController = (horizontalAttack != 0 || verticalAttack != 0); ;
 
 
         var direction = (GetGlobalMousePosition() - GlobalPosition).Normalized();
@@ -94,9 +94,11 @@ public class Player : KinematicBody2D
 
                 var scyth = ScythScene.Instance<Scyth>();
                 scyth.LifeTime = ShurikenLifeTime;
-                scyth.Size = ShurikenSize*4;
-                scyth.GlobalPosition = GlobalPosition + direction.Rotated(Mathf.Pi / 2f) * (ScythCount - (i + 1)) * (ShurikenSize*4);
+                scyth.Size = ShurikenSize * 4;
+                var scythRotation = ((direction.Rotated(Mathf.Pi / 2f)));
+                scyth.GlobalPosition = (GlobalPosition) + (scythRotation * i * ShurikenSize * 4) - ((ScythCount * scythRotation * ShurikenSize * 4) * .5f);
                 scyth.PiercingLeft = PierceCount;
+                scyth.HomingLeft = HomingCount;
 
                 scyth.OnCropHarvested += OnCropHarvested;
                 scyth.OnWeedHarvested += OnWeedHarvested;
@@ -119,7 +121,7 @@ public class Player : KinematicBody2D
             DashParticle.Restart();
 
             var areas = GetNode<Area2D>("Area2D").GetOverlappingAreas().Cast<Area2D>();
-            foreach(var area in areas)
+            foreach (var area in areas)
             {
                 TileSoil(area);
             }

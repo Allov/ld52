@@ -1,9 +1,9 @@
 [gd_scene format=2]
 
-[node name="Map5" type="Node2D"]
+[node name="Map9" type="Node2D"]
 
 [node name="Walls2" type="StaticBody2D" parent="."]
-position = Vector2( 1400, 184 )
+position = Vector2( 1400, 120 )
 rotation = 1.57079
 z_index = 1
 collision_layer = 66
@@ -11,7 +11,7 @@ collision_mask = 149
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls2"]
 position = Vector2( 7.50282, 503.75 )
-polygon = PoolVector2Array( -47.5065, 72.2497, 504.494, 72.2532, 504.493, 120.253, -47.5068, 120.25 )
+polygon = PoolVector2Array( -47.5065, 72.2497, 184.494, 72.2512, 184.493, 120.251, -47.5068, 120.25 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Walls2"]
 visible = false
@@ -19,16 +19,33 @@ color = Color( 0.321569, 0.321569, 0.321569, 1 )
 polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
 
 [node name="Walls3" type="StaticBody2D" parent="."]
-position = Vector2( 1024, 512 )
-rotation = 3.14159
+position = Vector2( 1400, 568 )
+rotation = 1.57079
 z_index = 1
 collision_layer = 66
 collision_mask = 149
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls3"]
-polygon = PoolVector2Array( -48.0003, 71.9998, 505.949, 71.9865, 505.949, 119.986, -48.0005, 120 )
+position = Vector2( 7.50282, 503.75 )
+polygon = PoolVector2Array( -119.506, 72.2493, 128.493, 72.2532, 128.493, 120.253, -119.507, 120.249 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Walls3"]
+visible = false
+color = Color( 0.321569, 0.321569, 0.321569, 1 )
+polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )
+
+[node name="Walls4" type="StaticBody2D" parent="." groups=["Water"]]
+position = Vector2( 1400, 440 )
+rotation = 1.57079
+z_index = 1
+collision_layer = 64
+collision_mask = 145
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls4"]
+position = Vector2( 7.50282, 503.75 )
+polygon = PoolVector2Array( -119.506, 72.2493, -7.50644, 72.25, -7.50671, 120.25, -119.507, 120.249 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls4"]
 visible = false
 color = Color( 0.321569, 0.321569, 0.321569, 1 )
 polygon = PoolVector2Array( -128.247, 63.7493, 514.229, 63.7533, 514.228, 127.753, -128.247, 127.749 )

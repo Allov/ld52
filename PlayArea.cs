@@ -24,7 +24,7 @@ public class PlayArea : Node2D
     private List<Tile> WaterTiles;
     public int FieldCount { get; private set; }
 
-    public int NumberOfDays { get; private set; }
+    public int CurrentDay { get; private set; }
     [Export] public NodePath DaysLabelNodePath;
     public Label DaysLabel;
     public Player Player;
@@ -55,6 +55,7 @@ public class PlayArea : Node2D
     public float WeedProgress { get; private set; }
     [Export] public Curve DayLengthCurve { get; set; }
     [Export] public Curve AngryHealthCurve { get; set; }
+    [Export] public int StartingDay { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -120,6 +121,8 @@ public class PlayArea : Node2D
 
         GrowCooldown = new Cooldown(GrowTime, this);
         GrowCooldown.Use();
+
+        CurrentDay = StartingDay;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -151,7 +154,7 @@ public class PlayArea : Node2D
 
         if (GrowCooldown.Use())
         {
-            NumberOfDays++;
+            CurrentDay++;
 
             GrowCrops();
             GrowWeeds();
@@ -161,7 +164,7 @@ public class PlayArea : Node2D
             SpawnAngries();
 
 
-            if (NumberOfDays > 0 && NumberOfDays % SpawnFrequency == 0)
+            if (CurrentDay > 0 && CurrentDay % SpawnFrequency == 0)
             {
                 Shop.OpenShop();
             }
@@ -170,7 +173,7 @@ public class PlayArea : Node2D
                 Shop.Visible = false;
             }
 
-            GrowCooldown.Reset(GrowCooldown.Time * (DayLengthCurve.Interpolate((float)NumberOfDays / (float)MaxNumberOfDays)));
+            GrowCooldown.Reset(GrowCooldown.Time * (DayLengthCurve.Interpolate((float)CurrentDay / (float)MaxNumberOfDays)));
             GrowCooldown.Use();
         }
 
@@ -194,20 +197,20 @@ public class PlayArea : Node2D
     private void SpawnAngries()
     {
         var weedRatio = (float)WeedTiles.Count / (float)Field.Count;
-        if (NumberOfDays == 5)
+        if (CurrentDay == StartingDay + 5)
         {
             SpawnAngryPlant();
             Camera.Shake(1.4f, 2f);
         }
 
-        if (NumberOfDays == 10)
+        if (CurrentDay == 10)
         {
             SpawnAngryPlant();
             SpawnAngryPlant();
             Camera.Shake(1.4f, 2f);
         }
 
-        if (!Day15Done && (NumberOfDays == 15 || weedRatio > .7f))
+        if (!Day15Done && (CurrentDay == StartingDay + 15 || weedRatio > .7f))
         {
             Day15Done = true;
             for (var i = 0; i < 5; i++)
@@ -219,7 +222,7 @@ public class PlayArea : Node2D
             Camera.Shake(2f, 3f);
         }
 
-        else if (NumberOfDays >= 20 && NumberOfDays % 5 == 0)
+        else if (CurrentDay >= StartingDay + 20 && CurrentDay % 5 == 0)
         {
             MadnessLevel++;
             for (var i = 0; i < Math.Max(3, MadnessLevel * 2); i++)
@@ -241,6 +244,12 @@ public class PlayArea : Node2D
             {
                 SpawnAngryEggplant();
             }
+
+            if (MadnessLevel >= 6)
+            {
+                SpawnAngryTomato();
+            }
+
             Camera.Shake(2f, 3f);
         }
     }
@@ -256,7 +265,7 @@ public class PlayArea : Node2D
     }
     private void SpawnAngryAt(BaseAngry angry, Vector2 position)
     {
-        angry.Health = (int)((float)angry.Health * (1f + AngryHealthCurve.Interpolate((float)NumberOfDays / (float)MaxNumberOfDays)));
+        angry.Health = (int)((float)angry.Health * (1f + AngryHealthCurve.Interpolate((float)CurrentDay / (float)MaxNumberOfDays)));
         angry.GlobalPosition = position;
         Angries.AddChild(angry);
     }
@@ -313,7 +322,7 @@ public class PlayArea : Node2D
 
     private void SpawnWeeds()
     {
-        var numberOfSpawns = (int)(SpawnFactor * ((float)NumberOfDays * (float)NumberOfDays) + 1f);
+        var numberOfSpawns = (int)(SpawnFactor * ((float)CurrentDay * (float)CurrentDay) + 1f);
 
         for (var i = 0; i < numberOfSpawns; i++)
         {

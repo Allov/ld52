@@ -122,6 +122,7 @@ shape = SubResource( 1 )
 
 [node name="PickUpSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 2 )
+bus = "SFX"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enable = true
@@ -133,8 +134,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_right = 112.0
-margin_bottom = 47.0
+margin_left = -768.0
+margin_top = -432.0
+margin_right = -656.0
+margin_bottom = -385.0
 rect_scale = Vector2( 1.1, 1.1 )
 custom_fonts/font = SubResource( 6 )
 text = "+10"

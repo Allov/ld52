@@ -1,4 +1,4 @@
 internal interface IHittable
 {
-    void Hit();
+    void Hit(bool pierce);
 }

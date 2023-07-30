@@ -29,11 +29,11 @@ public class Shop : PanelContainer
         },
         new Perk
         {
-            Name = "Longer Shurikens (+500ms)",
+            Name = "Longer Shurikens (+250ms)",
             Description = "Your shurikens last longer.",
             Cost = TierPerkStartingPrice,
             Effect = (shop, perk) => {
-                shop.Player.ShurikenLifeTime = shop.Player.ShurikenLifeTime + .5f;
+                shop.Player.ShurikenLifeTime = shop.Player.ShurikenLifeTime + .25f;
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
@@ -102,11 +102,11 @@ public class Shop : PanelContainer
         },
         new Perk
         {
-            Name = "Speed Increase (+25%)",
+            Name = "Speed Increase (+50%)",
             Description = "You run faster.",
             Cost = TierPerkStartingPrice,
             Effect = (shop, perk) => {
-                shop.Player.Speed = shop.Player.Speed * 1.25f;
+                shop.Player.Speed += shop.Player.Speed * .5f;
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
@@ -198,12 +198,24 @@ public class Shop : PanelContainer
         new Perk
         {
             Id = "piercing",
-            Name = "Piercing Shuriken +2",
-            Description = "Your Shurikens pierce through 2 more angries.",
-            Cost = TierPerkStartingPrice,
-            Unique = true,
+            Name = "Piercing Shuriken +1",
+            Description = "Your Shurikens pierce through 1 more angry.",
+            Cost = TierPerkStartingPrice * 2,
             Effect = (shop, perk) => {
-                shop.Player.PierceCount += 2;
+                shop.Player.PierceCount += 1;
+                perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
+                perk.Tier++;
+            }
+        },
+        new Perk
+        {
+            Id = "homing",
+            Name = "Homing Shuriken +1",
+            Description = "Your Shurikens piercing through angry will target +1 nearest enemy.",
+            Cost = TierPerkStartingPrice * 2,
+            CanSpawn = (shop) => shop.Player.ActivePerks.Any(p => p.Id == "piercing"),
+            Effect = (shop, perk) => {
+                shop.Player.HomingCount += 1;
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
@@ -242,7 +254,8 @@ public class Shop : PanelContainer
             Perks = Perks.Where(p => p != boughtPerk).ToArray();
         }
 
-        CloseAndContinue();
+        // CloseAndContinue();
+        RollPerks(false);
     }
 
     private void CloseAndContinue()

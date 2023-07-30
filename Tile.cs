@@ -168,7 +168,7 @@ public class Tile : Area2D
     private async void DoAnimation()
     {
         var tween = new Tween();
-        tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One * 4f, .2f, Tween.TransitionType.Linear, Tween.EaseType.In);
+        tween.InterpolateProperty(CurrentSprite, "scale", new Vector2(.6f, .6f), Vector2.One * 4f, .6f, Tween.TransitionType.Bounce, Tween.EaseType.OutIn);
         tween.InterpolateProperty(CurrentSprite, "modulate:a", .7f, 1f, .1f, Tween.TransitionType.Sine, Tween.EaseType.In);
         AddChild(tween);
         tween.Start();
@@ -211,11 +211,11 @@ public class Tile : Area2D
         Stage++;
     }
 
-    public void Stomp()
+    public void Stomp(int stage)
     {
         if (Disabled) return;
 
-        Stage = RandomHelpers.RangeInt(1, 3);
+        Stage = stage;
         ChangeGroup("Weed", true);
     }
 
