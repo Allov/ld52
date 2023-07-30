@@ -258,6 +258,17 @@ public class Shop : PanelContainer
         RollPerks(false);
     }
 
+    public void Lock(int index)
+    {
+        BuyablePerks[index].Locked = true;
+
+        var path = "ShopContainer/Items/Item" + index;
+        var buyButtonPath = path + "/Item/BuyLock/Buy";
+        var lockButtonPath = path + "/Item/BuyLock/Lock";
+        GetNode<Button>(buyButtonPath).Disabled = true;
+        GetNode<Button>(lockButtonPath).Disabled = true;
+    }
+
     private void CloseAndContinue()
     {
         GetTree().Paused = false;
@@ -271,18 +282,30 @@ public class Shop : PanelContainer
             Player.GoldCoins -= 50;
         }
         // pick 3 random perks
-        BuyablePerks = Perks
+        var newBuyablePerks = Perks
             .Where(perk => perk.CanSpawn(this))
             .ToArray()
             .PickN(NumberOfBuyableItems);
 
-        for (var i = 0; i < BuyablePerks.Length; i++)
+        if (BuyablePerks == null)
         {
+            BuyablePerks = newBuyablePerks;
+        }
+
+        for (var i = 0; i < newBuyablePerks.Length; i++)
+        {
+            if (!BuyablePerks[i].Locked)
+            {
+                BuyablePerks[i] = newBuyablePerks[i];
+            }
+
+
             var path = "ShopContainer/Items/Item" + i;
 
             GetNode<Label>(path + "/Item/Name").Text = BuyablePerks[i].Name;
-            GetNode<Button>(path + "/Item/Buy").Text = $"$ {BuyablePerks[i].Cost}";
-            GetNode<Button>(path + "/Item/Buy").Disabled = Player.GoldCoins < BuyablePerks[i].Cost;
+            GetNode<Button>(path + "/Item/BuyLock/Buy").Text = $"$ {BuyablePerks[i].Cost}";
+            GetNode<Button>(path + "/Item/BuyLock/Buy").Disabled = Player.GoldCoins < BuyablePerks[i].Cost;
+            GetNode<Button>(path + "/Item/BuyLock/Lock").Disabled = false;
             GetNode<Label>(path + "/Item/Description").Text = BuyablePerks[i].Description;
         }
 
@@ -308,6 +331,21 @@ public class Shop : PanelContainer
         Buy(2);
     }
 
+    public void _on_Lock_Item1_pressed()
+    {
+        Lock(0);
+    }
+
+    public void _on_Lock_Item2_pressed()
+    {
+        Lock(1);
+    }
+
+    public void _on_Lock_Item3_pressed()
+    {
+        Lock(2);
+    }
+
     public void _on_RerollItems_pressed()
     {
         RollPerks(true);
@@ -328,4 +366,6 @@ public class Perk
     public bool Unique;
     public Func<Shop, bool> CanSpawn = (shop) => true;
     public string Description;
+
+    public bool Locked;
 }

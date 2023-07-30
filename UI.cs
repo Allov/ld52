@@ -97,18 +97,27 @@ public class UI : CanvasLayer
         {
             CloseSettings();
         }
-        else if (Input.IsActionJustPressed("ui_pause") && !GetTree().Paused)
+
+        if (Input.IsActionJustPressed("ui_pause") && !GetTree().Paused)
         {
             Pause();
         }
-        else if (Input.IsActionJustPressed("ui_pause") && UserPaused)
+        else if (Input.IsActionJustPressed("ui_pause") && UserPaused && !Shop.Visible)
         {
             Resume();
+        }
+        else if (Input.IsActionJustPressed("ui_pause") && !UserPaused && Shop.Visible)
+        {
+            Pause();
+        }
+        else if (Input.IsActionJustPressed("ui_pause") && UserPaused && Shop.Visible)
+        {
+            HidePauseMenu();
         }
 
         if (Input.IsActionJustPressed("DEBUG_open_shop"))
         {
-            Shop.OpenShop();
+            OpenShop();
         }
 
         if (Input.IsActionJustPressed("DEBUG_give_gold"))
@@ -118,6 +127,11 @@ public class UI : CanvasLayer
         }
 
         UpdateUI(delta);
+    }
+
+    private void OpenShop()
+    {
+        Shop.OpenShop();
     }
 
     private void UpdateUI(float delta)
@@ -162,7 +176,7 @@ public class UI : CanvasLayer
             OldDanger = PlayArea.InDanger();
         }
 
-        GetNode<Label>("CalendarLabel").Text = $"  {PlayArea.CurrentDay}{GetOrdinalNumber(PlayArea.CurrentDay)} day";
+        GetNode<Label>("CalendarLabel").Text = $"  {PlayArea.CurrentDay + 1}{GetOrdinalNumber(PlayArea.CurrentDay + 1)} day";
         CropsLabel.Text = $"{PlayArea.Player.HarvestedCropsCount.ToString("n0")}";
         WeedLabel.Text = $"{PlayArea.Player.HavestedWeedCount.ToString("n0")}";
 
@@ -213,6 +227,11 @@ public class UI : CanvasLayer
     private void Resume()
     {
         GetTree().Paused = false;
+        HidePauseMenu();
+    }
+
+    private void HidePauseMenu()
+    {
         UserPaused = false;
         GetNode<PanelContainer>("Paused").Visible = false;
         GetNode<PanelContainer>("Paused").Modulate = Colors.Transparent;
