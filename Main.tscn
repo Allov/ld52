@@ -224,7 +224,6 @@ position = Vector2( 0, 64.2476 )
 script = ExtResource( 9 )
 DayLengthCurve = SubResource( 26 )
 AngryHealthCurve = SubResource( 27 )
-StartingDay = 20
 PercentDanger = 0.7
 TileScene = ExtResource( 3 )
 GrowTime = 10.0
