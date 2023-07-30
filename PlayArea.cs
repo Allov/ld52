@@ -11,7 +11,7 @@ public class PlayArea : Node2D
     [Export] public int Height = 12;
     [Export] public int TileSize = 64;
     [Export] public PackedScene TileScene;
-    private Cooldown GrowCooldown;
+    public Cooldown GrowCooldown { get; private set; }
     [Export] public float GrowTime = 5f;
 
     public Dictionary<int, Tile> Field = new Dictionary<int, Tile>();

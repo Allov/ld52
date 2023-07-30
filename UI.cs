@@ -136,6 +136,13 @@ public class UI : CanvasLayer
 
     private void UpdateUI(float delta)
     {
+        if (!GetTree().Paused)
+        {
+            var timeRatio = PlayArea.GrowCooldown.TimeLeft() / PlayArea.GrowTime;
+            GD.Print(timeRatio);
+            GetNode<Sprite>("ClockNeedle").Rotation = Mathf.Lerp(0f, 2f * Mathf.Pi, 1f - timeRatio);
+        }
+
         if (OldCoinsCount != PlayArea.Player.GoldCoins)
         {
             // MoneyLabel.Text = $"$ {PlayArea.Player.GoldCoins}";

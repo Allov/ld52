@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=2]
+[gd_scene load_steps=60 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://AngryPlant.tscn" type="PackedScene" id=2]
@@ -41,6 +41,8 @@
 [ext_resource path="res://Assets/weed_count.png" type="Texture" id=39]
 [ext_resource path="res://Map9.tscn" type="PackedScene" id=40]
 [ext_resource path="res://Assets/music_bg2.wav" type="AudioStream" id=41]
+[ext_resource path="res://Assets/clock.png" type="Texture" id=42]
+[ext_resource path="res://Assets/clock_needle.png" type="Texture" id=43]
 
 [sub_resource type="Curve" id=26]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.312668, 0.5 ), -2.36091, -0.0132264, 0, 1, Vector2( 1, 0.490909 ), -0.0132264, 0.0, 1, 0 ]
@@ -1251,6 +1253,16 @@ script = ExtResource( 25 )
 [node name="Music" type="AudioStreamPlayer" parent="UI"]
 stream = ExtResource( 41 )
 bus = "Music"
+
+[node name="Clock" type="Sprite" parent="UI"]
+position = Vector2( 72, 760 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 42 )
+
+[node name="ClockNeedle" type="Sprite" parent="UI"]
+position = Vector2( 72, 760 )
+scale = Vector2( 2, 2 )
+texture = ExtResource( 43 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 13 )
