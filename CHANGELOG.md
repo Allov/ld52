@@ -10,6 +10,7 @@
 - The shop have been moderately reworked:
   - The shop will now show up every 8th day (from 4).
   - It is now possible to buy multiple items from a single shop.
+  - It is now possible to lock an item for later.
 - Perk Balance: Longer Shurikens adds 250ms (from 500ms).
 - Perk Balance: Speed Increase is now 50% (from 25%).
 - Perk Balance: Piercing Shurikens now pierce through 1 enemy per upgrade (from 2).
@@ -28,6 +29,7 @@
 - Some decors added around the field.
 - Walls are now obvious around the field.
 - Scene transitions should be a bit smoother and indicates clearly a loading is happening.
+- It is now possible to open the pause menu when is shop.
 
 
 ## Build 3
