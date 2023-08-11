@@ -4,6 +4,7 @@
 
 ## Gameplay & Balance
 
+- Changed the way weed spread to ve chance based instead of 100%.
 - Angry health have been multiplied by 5.
 - Shuriken damage now starts at 5.
 - Wider Shuriken will add 25% (ceil) damage to shuriken every level.
