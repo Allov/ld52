@@ -1,5 +1,20 @@
 # Change log
 
+## Build 5
+
+## Gameplay & Balance
+
+- Angry health have been multiplied by 5.
+- Shuriken damage now starts at 5.
+- Wider Shuriken will add 25% (ceil) damage to shuriken every level.
+- Shop will now open on the first 50 crops you harvest, and every 100 (150, 250, 350, etc.) after.
+- New Perk: Cone of Shuriken. You thrown shuriken in a cone when dashing.
+- New Perk: Faster Shuriken. Shuriken fly faster.
+
+## UI
+
+- Updated some of the tile to be darker.
+
 ## Build 4
 
 ## Gameplay & Balance

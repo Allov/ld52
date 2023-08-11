@@ -9,7 +9,7 @@
 radius = 112.0
 
 [node name="AngryTomato" instance=ExtResource( 1 )]
-Health = 70
+Health = 350
 StageMax = 4
 StartingForce = 50.0
 Drops = [ ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ), ExtResource( 3 ) ]

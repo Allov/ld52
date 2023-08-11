@@ -11,7 +11,7 @@ radius = 32.0
 
 [node name="AngryPlant" instance=ExtResource( 1 )]
 collision_layer = 136
-Health = 4
+Health = 20
 StageMax = 5
 StartingForce = 25.0
 

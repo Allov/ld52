@@ -53,6 +53,8 @@ public class PlayArea : Node2D
     public YSort Angries;
     [Export] public PackedScene[] Maps;
     [Export] public bool OpenShopToday;
+    [Export] public float ShopCooldownTime = 10f;
+    private int NextHarvestShopCount = 50;
 
     [Export] public bool SpawnAngriesToday { get; set; }
 
@@ -60,6 +62,7 @@ public class PlayArea : Node2D
     [Export] public Curve DayLengthCurve { get; set; }
     [Export] public Curve AngryHealthCurve { get; set; }
     [Export] public int StartingDay { get; set; }
+    [Export] public Cooldown ShopCooldown { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -128,6 +131,7 @@ public class PlayArea : Node2D
         GrowTime = GrowTime * (DayLengthCurve.Interpolate((float)(CurrentDay) / (float)MaxNumberOfDays));
         GrowCooldown = new Cooldown(GrowTime, this);
         GrowCooldown.Use();
+        ShopCooldown = new Cooldown(ShopCooldownTime, this);
 
     }
 
@@ -158,6 +162,13 @@ public class PlayArea : Node2D
 
         UpdateTileGroupCount();
 
+        if (Player.HarvestedCropsCount >= NextHarvestShopCount)
+        {
+            NextHarvestShopCount += 100;
+            Shop.OpenShop();
+        }
+
+
         if (GrowCooldown.Use())
         {
             CurrentDay++;
@@ -169,10 +180,7 @@ public class PlayArea : Node2D
 
             SpawnAngriesToday = (CurrentDay) % 5 == 0;
 
-            if (CurrentDay > 0 && (CurrentDay) % SpawnFrequency == 0)
-            {
-                OpenShopToday = true;
-            }
+            // if (CurrentDay > 0 && (CurrentDay) % SpawnFrequency == 0)
 
             GrowTime = GrowCooldown.Time * (DayLengthCurve.Interpolate((float)(CurrentDay) / (float)MaxNumberOfDays));
             GrowCooldown.Reset(GrowTime);
@@ -406,7 +414,7 @@ public class PlayArea : Node2D
 
             for (var i = 0; i < 4; i++)
             {
-                if (neighbors[i] >= 0 && neighbors[i] < Field.Count)
+                if (RandomHelpers.DrawResult(4) && neighbors[i] >= 0 && neighbors[i] < Field.Count)
                 {
                     Field[neighbors[i]].ChangeGroup("Weed", true);
                 }

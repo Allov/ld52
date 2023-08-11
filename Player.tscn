@@ -118,6 +118,7 @@ radius = 128.0
 collision_mask = 0
 script = ExtResource( 3 )
 AddedGrowRadius = 16.0
+ShurikenDamage = 5
 ActionForce = Vector2( 640, 640 )
 ScythScene = ExtResource( 2 )
 DashDuration = 0.2

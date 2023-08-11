@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class Shop : PanelContainer
@@ -11,6 +12,7 @@ public class Shop : PanelContainer
 
     [Export] public NodePath PlayAreaNodePath;
     public PlayArea PlayArea;
+    [Export] public string WhitelistedPerks = "";
 
     private void InitializePerks()
     {
@@ -37,19 +39,18 @@ public class Shop : PanelContainer
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
-
         },
         new Perk
         {
             Name = "Wider Shurikens (+25%)",
-            Description = "Your shurikens are wider",
+            Description = "Your shurikens are wider and do more damage",
             Cost = TierPerkStartingPrice,
             Effect = (shop, perk) => {
                 shop.Player.ShurikenSize = (int)((float)shop.Player.ShurikenSize * 1.25f);
+                shop.Player.ShurikenDamage = (int)(Math.Ceiling(shop.Player.ShurikenDamage * 1.25f));
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
-
         },
         new Perk
         {
@@ -61,7 +62,6 @@ public class Shop : PanelContainer
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
-
         },
         new Perk
         {
@@ -73,7 +73,6 @@ public class Shop : PanelContainer
             Effect = (shop, perk) => {
                 shop.Player.WeedKiller = true;
             }
-
         },
         new Perk
         {
@@ -98,7 +97,6 @@ public class Shop : PanelContainer
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
-
         },
         new Perk
         {
@@ -110,7 +108,6 @@ public class Shop : PanelContainer
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
-
         },
         new Perk
         {
@@ -168,7 +165,6 @@ public class Shop : PanelContainer
             Effect = (shop, perk) => {
 				// noop
 			}
-
         },
         new Perk
         {
@@ -181,7 +177,6 @@ public class Shop : PanelContainer
             Effect = (shop, perk) => {
 				// noop
 			}
-
         },
         new Perk
         {
@@ -219,8 +214,62 @@ public class Shop : PanelContainer
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
+        },
+        new Perk
+        {
+            Id = "faster-shuriken",
+            Name = "Faster Shuriken (10%)",
+            Description = "Your Shurikens are faster.",
+            Cost = TierPerkStartingPrice * 2,
+            Effect = (shop, perk) => {
+                shop.Player.ShurikenSpeedModifier += .1f;
+                perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
+                perk.Tier++;
+            }
+        },
+        // new Perk
+        // {
+        //     Id = "fan-of-shurikens",
+        //     Name = "Fan of Shurikens",
+        //     Description = "You throw 8 shurikens around you when you dash.",
+        //     Cost = TierPerkStartingPrice * 5,
+        //     Unique = true,
+        //     Effect = (shop, perk) => {
+        //         shop.Player.FanOfShurikens = true;
+        //     }
+        // },
+        // new Perk
+        // {
+        //     Id = "gap-of-shurikens",
+        //     Name = "Gap of Shurikens",
+        //     Description = "You throw 6 shurikens with a gap around you when you dash.",
+        //     Cost = TierPerkStartingPrice * 5,
+        //     Unique = true,
+        //     Effect = (shop, perk) => {
+        //         shop.Player.GapOfShurikens = true;
+        //     }
+        // },
+        new Perk
+        {
+            Id = "cone-of-shurikens",
+            Name = "Cone of Shurikens",
+            Description = "You throw 4 shurikens in front of you when you dash.",
+            Cost = TierPerkStartingPrice * 20,
+            Unique = true,
+            Effect = (shop, perk) => {
+                shop.Player.ConeOfShurikens = true;
+            }
+        },
+        };
+
+        if (WhitelistedPerks != string.Empty)
+        {
+            var whiteList = WhitelistedPerks.Split(",");
+            Perks = Perks
+                .Where(p => whiteList.Contains(p.Id))
+                .ToArray();
         }
-    };
+
     }
 
     // Called when the node enters the scene tree for the first time.

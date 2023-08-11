@@ -20,6 +20,8 @@ public class Scyth : RigidBody2D
     [Export] public int PiercingLeft = 1;
     private bool Hit;
     private BaseAngry HitAngry;
+    [Export] public int Damage = 1;
+
     [Export] public int HomingLeft { get; set; }
 
     // Called when the node enters the scene tree for the first time.
@@ -105,7 +107,7 @@ public class Scyth : RigidBody2D
     {
         if (node is BaseAngry angry)
         {
-            angry.Health = angry.Health - 1;
+            angry.Health = angry.Health - Damage;
             PiercingLeft--;
 
             Hit = true;

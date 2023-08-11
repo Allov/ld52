@@ -46,13 +46,26 @@ public class Player : KinematicBody2D
     [Export] public int PierceCount { get; set; }
     [Export] public bool Disabled { get; set; }
     [Export] public bool AutoShoot = false;
+    private Cooldown FanOfShurikensCooldown;
+    [Export] public bool ConeOfShurikens;
+
+    [Export] public int ShurikenDamage { get; set; } = 1;
+
     [Export] public int HomingCount { get; set; }
+    [Export] public float ShurikenSpeedModifier { get; set; } = 1f;
+    [Export] public bool FanOfShurikens { get; set; }
+    [Export] public float FanOfShurikensCooldownTime { get; set; } = 2f;
+    [Export] public int FanOfShurikensCount { get; set; } = 8;
+    [Export] public int ConeOfShurikensCount { get; set; } = 4;
+    [Export] public bool GapOfShurikens { get; set; }
+    [Export] public int GapOfShurikensCount { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         ShootCooldown = new Cooldown(ShootTime, this);
         DashCooldown = new Cooldown(DashCooldownTime, this);
+        FanOfShurikensCooldown = new Cooldown(FanOfShurikensCooldownTime, this);
         DashParticle = GetNode<Particles2D>("Dash");
         AreaCollisionShape = GetNode<CollisionShape2D>("Area2D/CollisionShape2D");
         Size = ((CircleShape2D)AreaCollisionShape.Shape).Radius;
@@ -91,22 +104,7 @@ public class Player : KinematicBody2D
         {
             for (var i = 0; i < ScythCount; i++)
             {
-
-                var scyth = ScythScene.Instance<Scyth>();
-                scyth.LifeTime = ShurikenLifeTime;
-                scyth.Size = ShurikenSize * 4;
-                var scythRotation = ((direction.Rotated(Mathf.Pi / 2f)));
-                scyth.GlobalPosition = (GlobalPosition) + (scythRotation * i * ShurikenSize * 4) - ((ScythCount * scythRotation * ShurikenSize * 4) * .5f);
-                scyth.PiercingLeft = PierceCount;
-                scyth.HomingLeft = HomingCount;
-
-                scyth.OnCropHarvested += OnCropHarvested;
-                scyth.OnWeedHarvested += OnWeedHarvested;
-                scyth.OnAngryKilled += OnAngryKilled;
-
-                GetParent().AddChild(scyth);
-
-                scyth.ApplyCentralImpulse(direction * ActionForce);
+                ThrowShuriken(direction, i);
             }
         }
 
@@ -115,6 +113,10 @@ public class Player : KinematicBody2D
         // Calculate the new velocity based on the input
         if (Input.IsActionPressed("dash") && moving && DashCooldown.Use())
         {
+            PerformFanOfShurikens();
+            PerformConeOfShurikens(direction);
+            PerformGapOfShurikens(direction);
+
             dashTimer = DashDuration;
             DashParticle.OneShot = true;
             DashParticle.Emitting = true;
@@ -170,6 +172,79 @@ public class Player : KinematicBody2D
 
         // Move the ninja using the new velocity
         Velocity = MoveAndSlide(Velocity);
+    }
+
+    private void PerformConeOfShurikens(Vector2 direction)
+    {
+        if (ConeOfShurikens)
+        {
+            float coneAngleRadians = Mathf.Deg2Rad(180);
+            float coneHalfAngleRadians = coneAngleRadians / 2;
+
+            for (var i = 0; i < ConeOfShurikensCount; i++)
+            {
+                float angle = coneHalfAngleRadians - i * coneAngleRadians / (ConeOfShurikensCount - 1);
+                var offset = direction;
+
+                var shuriken = ThrowShuriken(offset.Rotated(angle), i);
+                shuriken.Modulate = Colors.Orange;
+            }
+        }
+    }
+
+    private void PerformGapOfShurikens(Vector2 direction)
+    {
+        if (GapOfShurikens)
+        {
+            float gapAngleRadians = Mathf.Deg2Rad(180);
+
+            for (var i = 0; i < GapOfShurikensCount; i++)
+            {
+                float angle = i * (Mathf.Pi * 2 + gapAngleRadians * (GapOfShurikensCount - 1)) / GapOfShurikensCount;
+                var offset = direction;
+
+                var shuriken = ThrowShuriken(offset.Rotated(angle), i);
+                shuriken.Modulate = Colors.Red;
+            }
+        }
+    }
+
+    public void PerformFanOfShurikens()
+    {
+        if (FanOfShurikens)
+        {
+            float angleIncrement = Mathf.Pi * 2 / 8;
+            for (var i = 0; i < FanOfShurikensCount; i++)
+            {
+                var angle = i * angleIncrement;
+                var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                var shuriken = ThrowShuriken(offset.Normalized(), i);
+                shuriken.Modulate = Colors.Blue;
+            }
+        }
+    }
+
+    private Scyth ThrowShuriken(Vector2 direction, int i)
+    {
+        var scyth = ScythScene.Instance<Scyth>();
+        scyth.LifeTime = ShurikenLifeTime;
+        scyth.Size = ShurikenSize * 4;
+        scyth.Damage = ShurikenDamage;
+
+        var scythRotation = ((direction.Rotated(Mathf.Pi / 2f)));
+        scyth.GlobalPosition = (GlobalPosition) + (scythRotation * i * ShurikenSize * 4) - ((ScythCount * scythRotation * ShurikenSize * 4) * .5f);
+        scyth.PiercingLeft = PierceCount;
+        scyth.HomingLeft = HomingCount;
+
+        scyth.OnCropHarvested += OnCropHarvested;
+        scyth.OnWeedHarvested += OnWeedHarvested;
+        scyth.OnAngryKilled += OnAngryKilled;
+
+        GetParent().AddChild(scyth);
+
+        scyth.ApplyCentralImpulse(direction * ActionForce * ShurikenSpeedModifier);
+
+        return scyth;
     }
 
     private void OnAngryKilled(BaseAngry baseAngry)

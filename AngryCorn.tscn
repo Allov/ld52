@@ -14,7 +14,7 @@ radius = 56.0
 
 [node name="AngryCorn" instance=ExtResource( 3 )]
 collision_layer = 136
-Health = 12
+Health = 60
 StartingForce = 100.0
 Drops = [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ) ]
 
