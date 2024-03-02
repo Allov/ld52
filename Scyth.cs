@@ -23,6 +23,7 @@ public class Scyth : RigidBody2D
     [Export] public int Damage = 1;
 
     [Export] public int HomingLeft { get; set; }
+    [Export] public int CritChances { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -36,6 +37,18 @@ public class Scyth : RigidBody2D
         ((CircleShape2D)AreaCollisionShape.Shape).Radius = Size / 2;
 
         ShadowSprite = GetNode<Sprite>("Sprite2");
+
+        var tween = new Tween();
+        tween.InterpolateProperty(GetNode<Sprite>("Sprite"), "modulate", null, Modulate * .1f, LifeTime, Tween.TransitionType.Back, Tween.EaseType.In);
+        tween.InterpolateProperty(GetNode<Sprite>("ShurikenShadow"), "position", null, GetNode<Sprite>("Sprite").Position, LifeTime, Tween.TransitionType.Bounce, Tween.EaseType.In);
+        // tween.InterpolateProperty(GetNode<Sprite>("Sprite"), "scale", null, Scale * .1f, LifeTime, Tween.TransitionType.Back, Tween.EaseType.InOut);
+        tween.InterpolateProperty(GetNode<Sprite>("ShurikenShadow"), "modulate", null, Colors.Transparent, LifeTime, Tween.TransitionType.Back, Tween.EaseType.In);
+        // tween.InterpolateProperty(GetNode<Sprite>("ShurikenShadow"), "scale", null, Scale * .01f, LifeTime, Tween.TransitionType.Back, Tween.EaseType.InOut);
+        tween.InterpolateProperty(GetNode<Line2D>("Trail"), "modulate", null, Colors.Transparent, LifeTime, Tween.TransitionType.Expo, Tween.EaseType.In);
+        tween.InterpolateProperty(GetNode<Line2D>("Trail"), "position", null, GetNode<Sprite>("Sprite").Position, LifeTime, Tween.TransitionType.Bounce, Tween.EaseType.In);
+        AddChild(tween);
+
+        tween.Start();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -107,7 +120,10 @@ public class Scyth : RigidBody2D
     {
         if (node is BaseAngry angry)
         {
-            angry.Health = angry.Health - Damage;
+            var crit = RandomHelpers.DrawResult(20 - CritChances);
+            var damage = (crit ? Damage * 2 : Damage);
+            damage = RandomHelpers.RangeInt(Damage / 2, Damage);
+            angry.Health = angry.Health - damage;
             PiercingLeft--;
 
             Hit = true;
@@ -129,7 +145,7 @@ public class Scyth : RigidBody2D
 
             if (node is IHittable hittable)
             {
-                hittable.Hit(Hit);
+                hittable.Hit(Hit, damage, crit);
             }
         }
 

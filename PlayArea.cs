@@ -5,6 +5,8 @@ using System.Linq;
 
 public class PlayArea : Node2D
 {
+    private const int NextHarvestCountModifier = 50;
+    [Export] public int StartingNextHarvestCount = 100;
     [Export] public float PercentDanger = .8f;
     [Export] public float PercentEndGame = .9f;
     [Export] public int Width = 24;
@@ -164,7 +166,8 @@ public class PlayArea : Node2D
 
         if (Player.HarvestedCropsCount >= NextHarvestShopCount)
         {
-            NextHarvestShopCount += 100;
+            NextHarvestShopCount += StartingNextHarvestCount;
+            StartingNextHarvestCount += NextHarvestCountModifier;
             Shop.OpenShop();
         }
 
@@ -225,7 +228,7 @@ public class PlayArea : Node2D
             Camera.Shake(1.4f, 2f);
         }
 
-        if (CurrentDay == 10)
+        if (CurrentDay == StartingDay + 10)
         {
             for (var i = 0; i < 3; i++)
             {
@@ -250,12 +253,12 @@ public class PlayArea : Node2D
         else if (CurrentDay >= StartingDay + 20 && CurrentDay % 5 == 0)
         {
             MadnessLevel++;
-            for (var i = 0; i < Math.Max(3, MadnessLevel * 2); i++)
+            for (var i = 0; i < Math.Min(MadnessLevel, 3); i++)
             {
                 SpawnAngryPlant();
             }
 
-            for (var i = 0; i < Math.Max(2, MadnessLevel); i++)
+            for (var i = 0; i < Math.Max(MadnessLevel, 2); i++)
             {
                 SpawnAngryCorn();
             }
@@ -401,9 +404,10 @@ public class PlayArea : Node2D
         var numberOfAngriesSpawned = 0;
         foreach (var tile in WeedTiles)
         {
-            tile.Grow();
+            // tile.Grow();
+
             if (RandomHelpers.DrawResult(10))
-            { // extra chance to grow
+            {
                 tile.Grow();
             }
 

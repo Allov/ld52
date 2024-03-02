@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public static class RandomHelpers
 {
@@ -40,7 +41,7 @@ public static class RandomHelpers
 	}
 
 	/// <summary>
-	/// 
+	///
 	/// </summary>
 	/// <param name="min"></param>
 	/// <param name="max"></param>
@@ -68,7 +69,7 @@ public static class RandomHelpers
 	{
 		var rnd = random ?? new Random();
 
-		var items = source.ToArray();        
+		var items = source.ToArray();
 
 		// Shuffle the list using a Fisher-Yates shuffle
 		for (int i = items.Length - 1; i > 0; i--)
@@ -81,4 +82,26 @@ public static class RandomHelpers
 
 		return items.Take(count).ToArray();
 	}
+
+    public static Vector2 GetRandomPositionInCircle(float radius, Random random = null)
+    {
+        var _random = (random ?? Randi);
+        // Generate a random angle in radians
+        float angle = (float)(_random.NextDouble() * 2 * Math.PI);
+
+        // Generate a random radius between 0 and 20
+        float randomizedRadius = (float)(_random.NextDouble() * radius);
+
+        // Calculate the x and y components of the position
+        float x = randomizedRadius * (float)Math.Cos(angle);
+        float y = randomizedRadius * (float)Math.Sin(angle);
+
+        return new Vector2(x, y);
+    }
+
+    public static float GetRandomAngle(float minAngle, float maxAngle, Random random = null)
+    {
+        // Generate a random angle in radians between 0 and 2*pi (0 and 360 degrees)
+        return (float)(((random ?? Randi).NextDouble()) * (maxAngle - minAngle) + minAngle);
+    }
 }

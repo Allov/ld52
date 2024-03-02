@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://BaseAngry.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Assets/angry-plant.png" type="Texture" id=2]
+[ext_resource path="res://GoldCoinDrop.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ChestDrop.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 32.0
@@ -11,9 +13,10 @@ radius = 32.0
 
 [node name="AngryPlant" instance=ExtResource( 1 )]
 collision_layer = 136
-Health = 20
-StageMax = 5
+Health = 80
+StageMax = 4
 StartingForce = 25.0
+Drops = [ ExtResource( 3 ), ExtResource( 4 ) ]
 
 [node name="CollisionShape2D" parent="." index="1"]
 shape = SubResource( 1 )

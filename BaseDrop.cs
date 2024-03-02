@@ -10,6 +10,7 @@ public class BaseDrop : RigidBody2D
     [Export] public Vector2 StartingForce { get; private set; }
     public bool PickedUp { get; private set; }
     [Export] public int Chances = 1; // 1 = 100%, 20 = 1/20
+    private AudioStreamPlayer2D DropSound;
 
     public override void _Ready()
     {
@@ -21,6 +22,8 @@ public class BaseDrop : RigidBody2D
         ApplyImpulse(new Vector2(RandomHelpers.NextFloat(), RandomHelpers.NextFloat()) * StartingForce, Vector2.One.Rotated(angle) * StartingForce);
         ApplyTorqueImpulse(StartingForce.x * RandomHelpers.RangeInt(-1, 1));
 
+        DropSound = GetNodeOrNull<AudioStreamPlayer2D>("DropSound");
+        DropSound?.Play();
     }
 
     public void PickUp()
@@ -44,7 +47,6 @@ public class BaseDrop : RigidBody2D
             sound.Play();
             DeadTimer = .9f;
             PickedUpAndReadyToDie = true;
-
         }
 
         if (PickedUpAndReadyToDie && DeadTimer <= 0f)

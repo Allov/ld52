@@ -27,9 +27,12 @@ public class UI : CanvasLayer
     private ColorRect Vignette;
     private bool OldDanger;
     private Label WeedLabel;
+    private float MusicPausePosition;
 
     [Export] public Color StartingHealthColor { get; set; }
     [Export] public Color DangerHealthColor { get; set; }
+    [Export] public bool DisplayDebug { get; set; }
+
 
     static string GetOrdinalNumber(int number)
     {
@@ -77,7 +80,19 @@ public class UI : CanvasLayer
         Tween = new Tween();
         AddChild(Tween);
 
-        SetCursor(true, "CursorA");
+        SetCursor(true, GetItem("cursor") ?? "CursorA");
+        var cursorColor = GetItem("cursor_color");
+        var color = Colors.White;
+        if (cursorColor != null)
+        {
+            color = new Color(cursorColor);
+        }
+        SetCursorColor(color);
+        SetCursorSize(2f);
+
+        SetVolume("Music", GetVolume("Music"));
+        SetVolume("SFX", GetVolume("SFX"));
+        SetVolume("Master", GetVolume("Master"));
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -127,7 +142,19 @@ public class UI : CanvasLayer
         }
 
         UpdateUI(delta);
+        UpdateDebugUI(delta);
     }
+
+    private void UpdateDebugUI(float delta)
+    {
+        if (DisplayDebug)
+        {
+            var debugString = $"FPS: {Engine.GetFramesPerSecond()} ({Engine.TargetFps})\n";
+
+            GetNode<Label>("DebugLabel").Text = debugString;
+        }
+    }
+
 
     private void OpenShop()
     {
@@ -137,6 +164,7 @@ public class UI : CanvasLayer
     private void UpdateUI(float delta)
     {
         UpdateClock();
+        UpdatePerks();
 
         if (OldCoinsCount != PlayArea.Player.GoldCoins)
         {
@@ -194,6 +222,17 @@ public class UI : CanvasLayer
 
     }
 
+    private void UpdatePerks()
+    {
+        var perkIds = PlayArea
+            .Player
+            .ActivePerks
+            .Select(p => p.ToString())
+            .Distinct()
+            .ToArray();
+        GetNode<Label>("PerksLabel").Text = string.Join("\n",  perkIds);
+    }
+
     private void UpdateClock()
     {
         if (!GetTree().Paused)
@@ -224,11 +263,46 @@ public class UI : CanvasLayer
         GetNode<PanelContainer>("Paused").Visible = true;
     }
 
+    public void _on_MusicVolumeSlider_value_changed(float value)
+    {
+        SetVolume("Music", value);
+    }
+
+    public void _on_SFXVolumeSlider_value_changed(float value)
+    {
+        SetVolume("SFX", value);
+    }
+
+    public void _on_MasterVolumeSlider_value_changed(float value)
+    {
+        SetVolume("Master", value);
+    }
+
+    private static void SetVolume(string type, float value)
+    {
+        var musicVolumeValue = value;
+        var musicIndex = AudioServer.GetBusIndex(type);
+        AudioServer.SetBusVolumeDb(musicIndex, GD.Linear2Db((float)musicVolumeValue));
+        SetItem($"{type.ToLower()}_volume", musicVolumeValue);
+    }
+
     private void CloseSettings()
     {
         SettingsActive = false;
         GetNode<PanelContainer>("Settings").Visible = false;
         GetNode<PanelContainer>("Paused").Visible = true;
+
+    }
+
+    private static void SetItem<T>(string key, T value)
+    {
+        JavaScript.Eval($"localStorage.setItem(\"{key}\",\"{value.ToString()}\")");
+    }
+    private static string GetItem(string key)
+    {
+        var result = JavaScript.Eval($"localStorage.getItem(\"{key}\")");
+
+        return result?.ToString();
     }
 
     private void Pause()
@@ -242,12 +316,16 @@ public class UI : CanvasLayer
         UserPaused = true;
         GetNode<PanelContainer>("Paused").Visible = true;
         GetNode<AnimationPlayer>("Paused/AnimationPlayer").Play("fadein");
+        GetNode<AudioStreamPlayer>("Paused/PauseSound").Play();
+        MusicPausePosition = GetNode<AudioStreamPlayer>("Music").GetPlaybackPosition();
+        GetNode<AudioStreamPlayer>("Music").Stop();
     }
 
     private void Resume()
     {
         GetTree().Paused = false;
         HidePauseMenu();
+        GetNode<AudioStreamPlayer>("Music").Play(MusicPausePosition);
     }
 
     private void HidePauseMenu()
@@ -266,16 +344,29 @@ public class UI : CanvasLayer
 
     public void _on_Settings_pressed()
     {
-        var masterIndex = AudioServer.GetBusIndex("Master");
-        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MasterVolume/MasterVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(masterIndex));
-        var musicIndex = AudioServer.GetBusIndex("Music");
-        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MusicVolume/MusicVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(musicIndex));
-        var sfxIndex = AudioServer.GetBusIndex("SFX");
-        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/SFXVolume/SFXVolumeSlider").Value = GD.Db2Linear(AudioServer.GetBusVolumeDb(sfxIndex));
+        var masterVolume = GetVolume("Master");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MasterVolume/MasterVolumeSlider").Value = masterVolume;
+
+        var musicVolume = GetVolume("Music");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/MusicVolume/MusicVolumeSlider").Value = musicVolume;
+
+        var sfxVolume = GetVolume("SFX");
+        GetNode<HSlider>("Settings/2Cols/Col1/Audio/VBoxContainer/SFXVolume/SFXVolumeSlider").Value = sfxVolume;
 
         GetNode<PanelContainer>("Paused").Visible = false;
         GetNode<PanelContainer>("Settings").Visible = true;
         SettingsActive = true;
+
+
+    }
+
+    private static float GetVolume(string type)
+    {
+        var musicIndex = AudioServer.GetBusIndex(type);
+        var storedMusicVolume = GetItem($"{type.ToLower()}_volume");
+        var defaultMusicVolume = GD.Db2Linear(AudioServer.GetBusVolumeDb(musicIndex));
+        var musicVolume = storedMusicVolume != null ? float.Parse(storedMusicVolume) : defaultMusicVolume;
+        return musicVolume;
     }
 
     public void _on_Quit_pressed()
@@ -301,13 +392,28 @@ public class UI : CanvasLayer
         GetNode<SceneTransition>("/root/SceneTransition").ChangeScene("Main.tscn");
     }
 
-    public void _on_ColorPickerButton_color_changed(Color color)
+    public void _on_ColorPicker_color_changed(Color color)
     {
         // GetNode<HBoxContainer>("Settings/2Cols/Col1/Options/VBoxContainer/Cursor/Cursors").Modulate = color;
+        SetCursorColor(color);
+    }
+
+    private void SetCursorColor(Color color)
+    {
         GetNode<Sprite>("CursorA").Modulate = color;
         GetNode<Sprite>("CursorB").Modulate = color;
         GetNode<Sprite>("CursorC").Modulate = color;
         GetNode<Sprite>("CursorD").Modulate = color;
+
+        SetItem("cursor_color", color.ToHtml());
+    }
+
+    private void SetCursorSize(float size)
+    {
+        GetNode<Sprite>("CursorA").Scale = new Vector2(size, size);
+        GetNode<Sprite>("CursorB").Scale = new Vector2(size, size);
+        GetNode<Sprite>("CursorC").Scale = new Vector2(size, size);
+        GetNode<Sprite>("CursorD").Scale = new Vector2(size, size);
     }
 
     public void _on_CursorA_toggled(bool pressed)
@@ -326,6 +432,8 @@ public class UI : CanvasLayer
 
             CurrentCursor = GetNode<Sprite>(name);
             CurrentCursor.Visible = true;
+
+            SetItem("cursor", name);
         }
     }
 

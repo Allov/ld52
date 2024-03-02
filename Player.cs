@@ -48,6 +48,7 @@ public class Player : KinematicBody2D
     [Export] public bool AutoShoot = false;
     private Cooldown FanOfShurikensCooldown;
     [Export] public bool ConeOfShurikens;
+    public EventHandler OnPickedChest;
 
     [Export] public int ShurikenDamage { get; set; } = 1;
 
@@ -59,6 +60,7 @@ public class Player : KinematicBody2D
     [Export] public int ConeOfShurikensCount { get; set; } = 4;
     [Export] public bool GapOfShurikens { get; set; }
     [Export] public int GapOfShurikensCount { get; set; }
+    [Export] public PackedScene DamageTextScene { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -341,9 +343,9 @@ public class Player : KinematicBody2D
         {
             drop.PickUp();
 
-            if (drop.Name == "ChestDrop")
+            if (drop.IsInGroup("ChestDrop"))
             {
-                GD.Print("Award Item");
+                OnPickedChest.Invoke(this, EventArgs.Empty);
             }
             else
             {
@@ -364,6 +366,17 @@ public class Player : KinematicBody2D
     public void AddPerk(Perk perk)
     {
         ActivePerks.Add(perk);
+
+        var text = DamageTextScene.Instance<DamageText>();
+        text.GlobalPosition = GlobalPosition;
+        text.Radius = 200f;
+        text.Animation = "Info";
+
+        var parent = GetParent<Node2D>();
+        parent.AddChild(text);
+
+        text.TextLabel.Text = $"{perk.Name} level {perk.Tier}";
+        // text.TextLabel.Align = Label.AlignEnum.Center;
     }
 
     public void GrowSize()

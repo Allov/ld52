@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Assets/ninja_shadow.png" type="Texture" id=1]
 [ext_resource path="res://Scyth.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Assets/footprint.png" type="Texture" id=5]
 [ext_resource path="res://Assets/white.png" type="Texture" id=6]
 [ext_resource path="res://Assets/arrow.png" type="Texture" id=7]
+[ext_resource path="res://DamageText.tscn" type="PackedScene" id=8]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 8.0
@@ -119,6 +120,7 @@ collision_mask = 0
 script = ExtResource( 3 )
 AddedGrowRadius = 16.0
 ShurikenDamage = 5
+DamageTextScene = ExtResource( 8 )
 ActionForce = Vector2( 640, 640 )
 ScythScene = ExtResource( 2 )
 DashDuration = 0.2

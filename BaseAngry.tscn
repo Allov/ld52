@@ -7,7 +7,7 @@
 [ext_resource path="res://Assets/grow.wav" type="AudioStream" id=5]
 [ext_resource path="res://Assets/squish.wav" type="AudioStream" id=6]
 [ext_resource path="res://Assets/squish3.wav" type="AudioStream" id=7]
-[ext_resource path="res://Assets/double_drops.wav" type="AudioStream" id=8]
+[ext_resource path="res://DamageText.tscn" type="PackedScene" id=9]
 
 [sub_resource type="PhysicsMaterial" id=26]
 friction = 0.0
@@ -196,6 +196,7 @@ script = ExtResource( 2 )
 StageMin = 1
 StageMax = 3
 Drops = [ ExtResource( 4 ) ]
+DamageTextScene = ExtResource( 9 )
 
 [node name="SpawnParticle" type="Particles2D" parent="."]
 emitting = false
@@ -249,12 +250,6 @@ bus = "SFX"
 
 [node name="Hit3" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 6 )
-pitch_scale = 0.8
-bus = "SFX"
-
-[node name="DoubleDrops" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 8 )
-volume_db = -4.0
 pitch_scale = 0.8
 bus = "SFX"
 

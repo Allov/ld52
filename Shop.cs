@@ -19,6 +19,7 @@ public class Shop : PanelContainer
         Perks = new Perk[] {
         new Perk
         {
+            Id = "more-shuriken",
             Name = "More Shurikens (+1)",
             Description = "You throw one more shuriken.",
             Cost = TierPerkStartingPrice,
@@ -31,6 +32,7 @@ public class Shop : PanelContainer
         },
         new Perk
         {
+            Id = "longer-shuriken",
             Name = "Longer Shurikens (+250ms)",
             Description = "Your shurikens last longer.",
             Cost = TierPerkStartingPrice,
@@ -42,18 +44,20 @@ public class Shop : PanelContainer
         },
         new Perk
         {
-            Name = "Wider Shurikens (+25%)",
-            Description = "Your shurikens are wider and do more damage",
+            Id = "stronger-shuriken",
+            Name = "Stronger Shurikens (+50%)",
+            Description = "Your shurikens are stronger and do more damage",
             Cost = TierPerkStartingPrice,
             Effect = (shop, perk) => {
-                shop.Player.ShurikenSize = (int)((float)shop.Player.ShurikenSize * 1.25f);
-                shop.Player.ShurikenDamage = (int)(Math.Ceiling(shop.Player.ShurikenDamage * 1.25f));
+                // shop.Player.ShurikenSize = (int)((float)shop.Player.ShurikenSize * 1.25f);
+                shop.Player.ShurikenDamage = (int)(Math.Ceiling(shop.Player.ShurikenDamage * 1.50f));
                 perk.Cost = perk.Cost + (perk.Cost * perk.Tier);
                 perk.Tier++;
             }
         },
         new Perk
         {
+            Id = "wider-planting",
             Name = "Wider Planting (+16)",
             Description = "You have a wider planting area when dashing.",
             Cost = TierPerkStartingPrice,
@@ -88,6 +92,7 @@ public class Shop : PanelContainer
         },
         new Perk
         {
+            Id = "attack-speed",
             Name = "Attack Speed Increase (-25ms)",
             Description = "You throw faster.",
             Cost = TierPerkStartingPrice,
@@ -100,6 +105,7 @@ public class Shop : PanelContainer
         },
         new Perk
         {
+            Id = "speed",
             Name = "Speed Increase (+50%)",
             Description = "You run faster.",
             Cost = TierPerkStartingPrice,
@@ -111,6 +117,7 @@ public class Shop : PanelContainer
         },
         new Perk
         {
+            Id = "dash-longer",
             Name = "Dash Longer (+200ms)",
             Description = "Your dash effect last longer.",
             Cost = TierPerkStartingPrice,
@@ -132,7 +139,7 @@ public class Shop : PanelContainer
 		// },
 		new Perk
         {
-            Id = "Crop Gold",
+            Id = "crop-gold",
             Name = "Crop Gold (+5 gold per)",
             Description = "Crops yield more gold.",
             Cost = TierPerkStartingPrice,
@@ -278,10 +285,17 @@ public class Shop : PanelContainer
         InitializePerks();
 
         Player = GetNode<Player>(PlayerNodePath);
+        Player.OnPickedChest += _on_PickedUp_Chest;
         PlayArea = GetNode<PlayArea>(PlayAreaNodePath);
         RollPerks(false);
     }
 
+    private void _on_PickedUp_Chest(object sender, EventArgs e)
+    {
+        RollPerks(false);
+        var perkIndex = RandomHelpers.RangeInt(0, BuyablePerks.Length - 1);
+        Buy(perkIndex, spend: false);
+    }
 
     public void OpenShop()
     {
@@ -291,10 +305,15 @@ public class Shop : PanelContainer
         RollPerks(false);
     }
 
-    public void Buy(int index)
+    public void Buy(int index, bool spend = true)
     {
         var boughtPerk = BuyablePerks[index];
-        Player.GoldCoins = Player.GoldCoins - boughtPerk.Cost;
+
+        if (spend)
+        {
+            Player.GoldCoins = Player.GoldCoins - boughtPerk.Cost;
+        }
+
         boughtPerk.Effect(this, boughtPerk);
         boughtPerk.Locked = false;
         Player.AddPerk(boughtPerk);
@@ -422,4 +441,9 @@ public class Perk
     public string Description;
 
     public bool Locked;
+
+    public override string ToString()
+    {
+        return $"{Id} ({Math.Max(1, Tier - 1)})";
+    }
 }
